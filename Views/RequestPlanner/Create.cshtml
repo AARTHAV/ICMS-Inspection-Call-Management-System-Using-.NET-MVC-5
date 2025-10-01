@@ -1,0 +1,1023 @@
+﻿@model ICMS.Models.RequestPlannerDetailsModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h2>Create Planning</h2>*@
+
+
+@using (Html.BeginForm("Create", "RequestPlanner", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div style="color:red">@ViewBag.RecordException</div>
+        <div style="color:red">@ViewBag.RecordNotExist</div>
+        <div style="color:red">@TempData["RecordException"]</div>
+        @if (ViewBag.RecordNotExist == null)
+        {
+
+            <h4 style="visibility:hidden">Plan Request:@Model.objInspReqModel[0].RqID</h4>
+            <h4><div style="float: right; color: blue">Status:@Html.DisplayFor(model => model.objInspReqModel[0].RqStatus)</div></h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.ActionLink("Close", "Index", null, new { @class = "btn btn-primary btn-large" })
+            <input type="hidden" name="ExternalInspector" id="ExternalInspector" value="@ViewBag.selectedInspector" />
+            <input type="hidden" name="InternalInspector" id="InternalInspector" value="@ViewBag.selectedInteralInspector" />
+            <div class="card" id="DivBusiness" runat="server" visible="false">
+
+                <div class="card-header">
+                    <b>Initiator Information</b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].RqNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.HiddenFor(model => model.objInspReqModel[0].RqID)
+                                @Html.HiddenFor(model => model.objInspReqModel[0].RqStatus)
+                                @Html.HiddenFor(model => model.PlnID)
+                                @Html.HiddenFor(model => model.IsParallel)
+                                <input type="hidden" name="IsInternalInspectorAvaliable" id="IsInternalInspectorAvaliable" />
+                                @*@Html.HiddenFor(model => model.objInspReqModel[0].OfrDttm, new { htmlAttributes = new { @id = "hidnOffer", @Value = Model.objInspReqModel[0].OfrDttm.Value.ToString("yyyy-MM-ddTHH:MM"), @class = "form-control" } })*@
+                                @Html.EditorFor(model => model.objInspReqModel[0].RqNo, new { htmlAttributes = new { @readonly = "readonly", @style = "width:35%;float:left;color:blue", @class = "form-control" } })
+                                @Html.EditorFor(model => model.objInspReqModel[0].RqRevNo, new { htmlAttributes = new { @readonly = "readonly", @style = "width:35%;color:blue", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div>
+
+                            @Html.LabelFor(model => model.objInspReqModel[0].RqRegDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3" style="margin-top: 5px;">
+                                @Model.objInspReqModel[0].RqRegDttm
+                                @*@Html.EditorFor(model => model.objInspReqModel[0].RqRegDttm, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].PrjNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].PrjNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].FrgNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].FrgNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].RqType, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].RqTypeName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                @*@Html.DropDownList("RqType", (IEnumerable<SelectListItem>)ViewBag.RequestType, "Select Request Type", new { @class = "form-control", @onchange = "FillAgency()" })*@
+                            </div>
+
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].StageName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].StageName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].LcName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].LcName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].Remark, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].RqRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].RqRegBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].OfrDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3" style="margin-top: 5px;">
+                                @Html.EditorFor(model => model.objInspReqModel[0].OfrDttm, new { htmlAttributes = new { @readonly = "readonly", @Value = Model.objInspReqModel[0].OfrDttm.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local", @required = false, @class = "form-control" } })
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.objInspReqModel[0].RqDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.objInspReqModel[0].RqDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="margin-left:15px">
+                    @if (Model.PlnID == 0)
+                    {
+                        <input type="button" id="ShowExtenralRequest" name="ShowExtenralRequest" data-bs-target="#profile" class="btn btn-primary btn-large" value="Raised Parallel External Request" onclick="ShowParallelRequestInformation()" />
+                        <input type="button" id="HideExtenralRequest" name="HideExtenralRequest" class="btn btn-danger btn-large" value="Cancel Parallel External Request" onclick="HideParallelRequestInformation()" />
+                    }
+                </div>
+            </div>
+
+
+            <div class="container"></div>
+            <div id="exTab1" class="card">
+                <ul class="nav nav-pills">
+                    <li id="InternalTab">
+                        <a href="#1a" data-toggle="tab">Internal Request</a>
+                    </li>
+                    <li id="ExternalTab">
+                        <a href="#2a" data-toggle="tab">External Request</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="tab-pane" id="1a">
+                        @if (Model.objInspReqModel[0].RqTypeName == "Internal")
+                        {
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.PlnStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnStart, new { htmlAttributes = new { @Value = Model.PlnStart.Value.ToString("yyyy-MM-ddTHH:mm"), @class = "form-control", @type = "datetime-local" } })
+                                        @Html.ValidationMessageFor(model => model.PlnStart, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.PlnEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnEnd, new { htmlAttributes = new { @class = "form-control", @Value = Model.PlnEnd.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                                        @Html.ValidationMessageFor(model => model.PlnEnd, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <div>
+                                    @Html.LabelFor(model => model.PlnBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnBy, new { htmlAttributes = new { @Value = Session["EmpName"].ToString(), @readonly = "readonly", @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.PlnBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.PlnRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-5">
+                                        @Html.EditorFor(model => model.PlnRemark, new { htmlAttributes = new { @class = "form-control", @required = "required", @onblur = "CopyRemarkToExternal()" } })
+                                        @Html.ValidationMessageFor(model => model.PlnRemark, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <div>
+                                    @Html.LabelFor(model => model.FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+
+                                        @*<input type="file" name="UploadedFile" multiple="multiple" accept="application/pdf, application/vnd.ms-excel,image/gif, image/jpeg" />*@
+                                        @Html.TextBoxFor(model => model.UploadedFile, new
+                                        {
+                                            type = "file",
+                                            multiple = "multiple",
+                                       onchange = "return checkFileUploadExt(this);"
+                                        })
+                                        @Html.ValidationMessageFor(m => m.UploadedFile, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <div>
+                                    @Html.LabelFor(model => model.lstEmployee, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-4">
+
+
+                                        <div style="float:left">
+                                            @Html.ListBoxFor(model => model.EmpPsNo, (ViewBag.Employee as SelectList), new { @class = "listbox", @style = "width:250px" })
+                                        </div>
+
+                                        <div style="float:left">
+
+                                            <div>
+
+                                                <input type="button" value=">>" name="btnAddEmployee" id="btnAddEmployee" onclick="return addEmployee()" />
+
+                                            </div>
+
+                                            <div>
+
+                                                <input type="button" value="<<" name="btnRemoveEmployee" id="btnRemoveEmployee" onclick="return removeEmployee()" />
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    @Html.DropDownListFor(model => model.Name_of_Employees, new SelectList(""), "--Selected Insecptor--", new { @size = 4, @class = "form-control;listbox", @multiple = "multiple", @style = "width:250px" })
+                                    @*<select id="Name_of_Employees" name="Name_of_Employees" Name="Name_of_Employees" Size="5"></select>*@
+                                    @*<input type="hidden" name="tempValue" id="tempValue"/>*@
+                                    @Html.HiddenFor(o => o.tempValue, new { Name = "tempValue" })
+                                    
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.PlnStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3" style="margin-top: 5px;">
+                                        @Html.EditorFor(model => model.PlnStart, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = Model.PlnStart.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.PlnEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3" style="margin-top: 5px;">
+                                        @Html.EditorFor(model => model.PlnEnd, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = Model.PlnEnd.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.PlnBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.PlnDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.PlnDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnDttm, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.PlnRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnRemark, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                    <div class="tab-pane" id="2a">
+                        @if (Model.ExtenalRquestPlnStart.HasValue)
+                        {
+                            <div class="form-group">
+
+                                <div>
+                                    @Html.LabelFor(model => model.ExtenalRquestPlnStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.ExtenalRquestPlnStart, new { htmlAttributes = new { @Value = Model.ExtenalRquestPlnStart.Value.ToString("yyyy-MM-ddTHH:mm"), @class = "form-control", @type = "datetime-local" } })
+                                        @*@Html.ValidationMessageFor(model => model.ExtenalRquestPlnStart, "", new { @class = "text-danger" })*@
+                                    </div>
+                                    <div>
+                                        @Html.LabelFor(model => model.ExtenalRquestPlnEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => model.ExtenalRquestPlnEnd, new { htmlAttributes = new { @class = "form-control", @Value = Model.ExtenalRquestPlnEnd.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                                            @*@Html.ValidationMessageFor(model => model.ExtenalRquestPlnEnd, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <div>
+                                    @Html.LabelFor(model => model.PlnBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.PlnBy, new { htmlAttributes = new { @Value = Session["EmpName"].ToString(), @readonly = "readonly", @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.PlnBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.ExternalPlnRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-5">
+                                        @Html.EditorFor(model => model.ExternalPlnRemark, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                        @*@Html.ValidationMessageFor(model => model.ExternalPlnRemark, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="DivExtenralRequestInformation">
+
+                                <div class="form-group">
+
+                                    <div>
+                                        @Html.LabelFor(model => model.AgcyID, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @*@Html.EditorFor(model => model.FrgNo, new { htmlAttributes = new { @class = "form-control" } })*@
+                                            @Html.DropDownListFor(model => model.AgcyID,
+    new SelectList(Enumerable.Empty<SelectListItem>(), "AgID", "AgName"),
+    new { @class = "form-control" })
+                                            <input type="hidden" name="hiddenAgencyName" id="hiddenAgencyName" value="@Model.AgencyName" />
+                                            @*@Html.ValidationMessageFor(model => model.AgcyID, "", new { @class = "text-danger" })*@
+                                            @*@Html.DropDownListFor("FrgNo", (IEnumerable<SelectListItem>)ViewBag.Forging, "Select Forging", new { @class = "form-control" })*@
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div>
+                                        @Html.LabelFor(model => model.FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+
+                                            @*<input type="file" name="UploadedExternalFile" multiple="multiple" accept="application/pdf, application/vnd.ms-excel,image/gif, image/jpeg" />*@
+                                            @Html.TextBoxFor(model => model.UploadedExternalFile, new { type = "file", multiple = "multiple", onchange = "return checkExternalFileUploadExt(this);" })
+                                            @Html.ValidationMessageFor(m => m.UploadedExternalFile, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+
+                                    <div>
+                                        @Html.LabelFor(model => model.lstEmployee, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-4">
+                                            <div style="float:left">
+                                                @Html.ListBoxFor(model => model.ExternalEmpPsNo, (ViewBag.Employee as SelectList), new { @class = "listbox", @style = "width:250px" })
+                                            </div>
+                                            <div style="float:left">
+                                                <div>
+                                                    <input type="button" value=">>" name="btnAddEmployee" id="btnExternalAddEmployee" onclick="return addExternalEmployee()" />
+                                                </div>
+                                                <div>
+                                                    <input type="button" value="<<" name="btnRemoveEmployee" id="btnExternalRemoveEmployee" onclick="return removeExternalEmployee()" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div>
+                                            @Html.DropDownListFor(model => model.External_Name_of_Employees, new SelectList(""),"--Selected Insecptor--", new { @size = 4, @class = "form-control;listbox", @multiple = "multiple", @style = "width:250px" })
+                                            @*<select id="Name_of_Employees" name="Name_of_Employees" Name="Name_of_Employees" Size="5"></select>*@
+                                            @*<input type="hidden" name="tempValue" id="tempValue"/>*@
+                                            @Html.HiddenFor(o => o.ExternaltempValue, new { Name = "ExternaltempValue" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card" id="DivShowReason" runat="server" visible="false">
+                <div class="card-header">
+                    <b>Reason Information</b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.ResnID, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.DropDownList("ResnID", (IEnumerable<SelectListItem>)ViewBag.Reason, "Select Reason", new { @class = "form-control" })
+                            </div>
+
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.InspRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                @Html.EditorFor(model => model.InspRemark, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="submit" value="Assign" id="btnAssign" name="btnAssign" class="btn btn-primary btn-large"
+                           onclick="return CheckDateValidation();" />
+                    @*<input type="button" value="Assign1" id="btnAssign1" name="btnAssign1" class="btn btn-primary btn-large"
+                           onclick="return CheckDateValidation();" />*@
+                    @Html.ActionLink("Close", "Index", null, new { @class = "btn btn-primary btn-large" })
+                    @if (Model.objInspReqModel[0].RqTypeName == "External")
+                    {
+                        @Html.ActionLink("View Internal Request", "Create", new { id = Model.objInspReqModel[0].RqID, data = Model.ID }, new { @class = "btn btn-primary btn-large", target = "_blank" })
+                    }
+                </div>
+            </div>
+
+            <div>Assigned Inspector:</div>
+            <table class="table table-striped">
+                <tr>
+                    <th cope="col">PsNo</th>
+                    <th cope="col">Inspector Name</th>
+                    <th cope="col">Type</th>
+                    <th cope="col">Assigned Datetime</th>
+                    <th cope="col"></th>
+                </tr>
+                @if (Model.listAssignInspector != null)
+                {
+                    for (int k = 0; k < Model.listAssignInspector.Count; k++)
+                    {
+                        <tr>
+                            <td scope="row">
+                                @Model.listAssignInspector[k].InsPsNo
+                            </td>
+                            <td scope="row">@Model.listAssignInspector[k].InsBy</td>
+                            <td scope="row">
+                                @Model.listAssignInspector[k].TypeOfInspector
+                            </td>
+                            <td scope="row">@Model.listAssignInspector[k].InsDttm</td>
+                            <td scope="row">
+                                @Html.ActionLink("Remove", "DeleteAssignInsp", new { id = @Model.listAssignInspector[k].InsID, data = Model.objInspReqModel[0].RqID },
+    new { onclick = "return confirm('Are you sure you wish to delete assiged this employee?');" })
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>Not assign Inspector yet</td>
+                    </tr>
+                }
+            </table>
+
+            <div>List of documents:</div>
+            <table class="table table-striped">
+                <tr>
+                    <th cope="col">Document Name</th>
+                    @*<th cope="col">Department</th>*@
+                    <th cope="col">Upload By</th>
+                    <th cope="col">Upload Date</th>
+                    <th cope="col"></th>
+                </tr>
+                @if (Model.lstDocument != null)
+                {
+                    for (int i = 0; i < Model.lstDocument.Count; i++)
+                    {
+                        <tr>
+                            <td scope="row">@Model.lstDocument[i].DocName</td>
+                            @*<td scope="row">@Model.PlnDpcd</td>*@
+                            <td scope="row">@Model.lstDocument[i].UpldBy</td>
+                            <td scope="row">@Model.lstDocument[i].UpldDttm</td>
+                            <td scope="row">
+                                @Html.ActionLink("Remove", "DeleteDoc", new { id = Model.lstDocument[i].DocID, data = Model.objInspReqModel[0].RqID },
+            new { onclick = "return confirm('Are you sure you wish to delete this document?');" })
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td scope="row">No Document avaliable</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>*@
+    <script src="~/js/jquery-1.11.1.min.js"></script>
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>*@
+    <script src="~/js/bootstrap-3.2.0.min.js"></script>
+    <style>
+        body {
+            /*padding: 10px;*/
+        }
+
+        #exTab1 .tab-content {
+            /*color: white;
+                                            background-color: #428bca;*/
+            padding: 5px 15px;
+            border: 1px solid black;
+        }
+
+        #exTab2 h3 {
+            color: white;
+            background-color: #428bca;
+            padding: 5px 15px;
+        }
+
+        /* remove border radius for the tab */
+
+        #exTab1 .nav-pills > li > a {
+            border-radius: 0;
+        }
+
+        /* change border radius for the tab , apply corners on top*/
+
+        #exTab3 .nav-pills > li > a {
+            border-radius: 4px 4px 0 0;
+        }
+
+        #exTab3 .tab-content {
+            color: white;
+            background-color: #428bca;
+            padding: 5px 15px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            //elem = document.getElementById("PlnStart")
+            //var iso = new Date().toISOString();
+            //alert(iso);
+            //var minDate = iso.substring(0, iso.length - 1);
+            //elem.value = minDate
+            //elem.min = minDate
+            var PlnID = document.getElementById("PlnID");
+            if (PlnID.value == 0) {
+                $('#DivExtenralRequestInformation').hide();
+                $('#HideExtenralRequest').hide();
+                $("#ExternalTab").addClass("disabled");
+                $("#1a").addClass("active");
+                $("#InternalTab").addClass("active");
+                $('#ExternalTab').hide();
+                $('#DivShowReason').hide();
+            }
+            else {
+                var ReqType = document.getElementById("objInspReqModel_0__RqTypeName");
+                if (ReqType.value == "Internal") {
+                    $('#DivExtenralRequestInformation').hide();
+                    $('#HideExtenralRequest').hide();
+                    $("#ExternalTab").addClass("disabled");
+                    $("#1a").addClass("active");
+                    $("#InternalTab").addClass("active");
+                    $('#ExternalTab').hide();
+                }
+                else {
+                    $('#DivExtenralRequestInformation').show();
+                    $("#InternalTab").addClass("disabled");
+                    $("#ExternalTab").addClass("active");
+                    $("#2a").addClass("active");
+                    $("#1a").addClass("disabled");
+                    $('#InternalTab').hide();
+                    document.getElementById('IsParallel').value = 1;
+                    FillAgency();
+                    var AgcyID = document.getElementById('AgcyID');
+                    var IsParallel = document.getElementById('IsParallel').value;
+                    var ReqStatus = document.getElementById('objInspReqModel_0__RqStatus').value;
+                    if (PlnID != 0 && (ReqStatus == "Replanned" || ReqStatus == "Assigned" || ReqStatus == "Planned & not allocated")) {
+                        $('#DivShowReason').show();
+                    }
+                    else {
+                        $('#DivShowReason').hide();
+                    }
+                }
+            }
+            var d = new Date();
+            var hours = d.getHours() % 12;
+            hours = hours ? hours : 12;
+            var ampm = hours >= 12 ? 'pm' : 'am';
+
+            elem = document.getElementById("PlnEnd")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+            /*elem.min = minDate + 'T15:00:00'*/
+            //elem.min = minDate + 'T' + d.getHours() + ':' + d.getMinutes();
+
+            elem = document.getElementById("PlnStart")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+
+            var getValue = $("#InternalInspector").val();
+            var array = getValue.split(',');
+            for (var i = 0; i < array.length - 1; i++) {
+                var Name_of_Employees = document.getElementById("Name_of_Employees");
+                var option = document.createElement("OPTION");
+                option.innerHTML = array[i];
+                option.value = array[i].substring(0, array[i].indexOf('-'));
+                Name_of_Employees.options.add(option);
+            }
+
+            elem = document.getElementById("ExtenalRquestPlnStart")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+
+            elem = document.getElementById("ExtenalRquestPlnEnd")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+            //elem.min = minDate + 'T' + d.getHours() + ':' + d.getMinutes();
+
+            //disable control if plan already exist
+
+
+
+            var getValue = $("#ExternalInspector").val();
+            var array = getValue.split(',');
+            for (var i = 0; i < array.length - 1; i++) {
+                var Name_of_Employees = document.getElementById("External_Name_of_Employees");
+                var option = document.createElement("OPTION");
+                option.innerHTML = array[i];
+                option.value = array[i].substring(0, array[i].indexOf('-'));
+                Name_of_Employees.options.add(option);
+            }
+
+        });
+    </script>
+    <script type="text/javascript">
+        function CheckDateValidation() {
+            var PlnID = document.getElementById('PlnID').value;
+            var IsParallel = document.getElementById('IsParallel').value;
+            var ReqStatus = document.getElementById('objInspReqModel_0__RqStatus').value;
+            if (PlnID != 0 && (ReqStatus == "Replanned" || ReqStatus == "Assigned" || ReqStatus == "Planned & not allocated")) {
+                var ResnID = document.getElementById('ResnID');
+                var InspRemark = document.getElementById('InspRemark');
+                if (ResnID.value == "") {
+                    alert("Please select reason");
+                    return false;
+                }
+                if (InspRemark.value == "") {
+                    alert("Please Enter Remarks");
+                    return false;
+                }
+            }
+            try {
+                var plnStart = document.getElementById('PlnStart');
+                var PlnEnd = document.getElementById('PlnEnd');
+                var OfrDttm = document.getElementById('objInspReqModel_0__OfrDttm');
+
+                if (Date.parse(plnStart.value) < Date.parse(OfrDttm.value)) {
+                    alert('Please select Internal Plan Start After Offer Date');
+                    return false;
+                }
+                else if (Date.parse(PlnEnd.value) <= Date.parse(plnStart.value)) {
+                    alert('Please select Internal Plan End Date After Plan Start Date');
+                    return false;
+                }
+            }
+            catch {
+
+            }
+
+            try {
+                var Name_of_Employees = document.getElementById('Name_of_Employees');
+                if (Name_of_Employees.length == 1) {
+                    alert('Please select inspector');
+                    return false;
+                }
+                var inspector = "";
+                for (var i = 1; i < Name_of_Employees.length; i++) {
+                    inspector = inspector + Name_of_Employees[i].value + ",";
+                    CheckInspectorAvaliable(Name_of_Employees[i].value, plnStart.value, PlnEnd.value, Name_of_Employees[i].text, PlnID);
+                    var IsInternalInspectorAvaliable = document.getElementById("IsInternalInspectorAvaliable");
+                    //alert(IsInternalInspectorAvaliable.value);
+                    if (IsInternalInspectorAvaliable.value == 'true') {
+                        return false;
+                    }
+                }
+                document.getElementById('tempValue').value = inspector;
+            }
+            catch {
+
+            }
+            var IsParallel = document.getElementById('IsParallel').value;
+            var PlnID = document.getElementById('PlnID').value;
+            var ReqType = document.getElementById("objInspReqModel_0__RqTypeName");
+            if (IsParallel == 1 || PlnID != 0 || ReqType.value == "External") {
+                var ExtenalRquestPlnStart = document.getElementById('ExtenalRquestPlnStart');
+                var ExtenalRquestPlnEnd = document.getElementById('ExtenalRquestPlnEnd');
+                var InternalRquestPlnEnd = document.getElementById('PlnEnd');
+                var ExtenalRemark = document.getElementById('ExternalPlnRemark');
+                var AgcyID = document.getElementById('AgcyID');
+                var plnStart = document.getElementById('PlnStart');
+                var OfrDttm = document.getElementById('objInspReqModel_0__OfrDttm');
+                if (AgcyID.value != "") {
+                    if (Date.parse(ExtenalRquestPlnStart.value) == Date.parse(InternalRquestPlnEnd.value)) {
+                        alert('External Plan Start and Internal Plan End should not be Clas');
+                        return false;
+                    }
+                    if (Date.parse(ExtenalRquestPlnStart.value) <= Date.parse(InternalRquestPlnEnd.value)) {
+                        alert('Please select External Plan Start After End Date of Interal Plan ' + InternalRquestPlnEnd.value);
+                        return false;
+                    }
+                    else if (Date.parse(ExtenalRquestPlnEnd.value) <= Date.parse(ExtenalRquestPlnStart.value)) {
+                        alert('Please select External Plan End Date After External Plan Start Date');
+                        return false;
+                    }
+                    if (ExternalPlnRemark.value.trim().length == 0) {
+                        alert('Please Enter External Request Remark');
+                        return false;
+                    }
+                    if (PlnID != 0) {
+                        var External_Name_of_Employees = document.getElementById('External_Name_of_Employees');
+                        if (External_Name_of_Employees.length == 1) {
+                            alert('Please select inspector');
+                            return false;
+                        }
+                    }
+                }
+                else {
+                    if (ReqType.value == "External") {
+                        alert('Please Select Agency');
+                        return false;
+                    }
+
+                }
+                //alert(OfrDttm.value.format('DD-MMM-YYYY'););
+
+            }
+
+            try {
+                var External_Name_of_Employees = document.getElementById('External_Name_of_Employees');
+                var Externalinspector = "";
+                for (var i = 1; i < External_Name_of_Employees.length; i++) {
+                    Externalinspector = Externalinspector + External_Name_of_Employees[i].value + ",";
+                    try {
+                        CheckInspectorAvaliable(External_Name_of_Employees[i].value, ExtenalRquestPlnStart.value, ExtenalRquestPlnEnd.value, External_Name_of_Employees[i].text, PlnID);
+                    }
+                    catch {
+
+                    }
+                    
+                    var IsInternalInspectorAvaliable = document.getElementById("IsInternalInspectorAvaliable");
+                    if (IsInternalInspectorAvaliable.value == 'true') {
+                        return false;
+                    }
+                }
+                document.getElementById('ExternaltempValue').value = Externalinspector;
+            }
+            catch {
+
+            }
+
+        }
+
+        function CopyRemarkToExternal() {
+            var PlnRemark = document.getElementById("PlnRemark");
+            document.getElementById("ExternalPlnRemark").value = PlnRemark.value;
+        }
+        function checkFileUploadExt(fieldObj) {
+            var control = document.getElementById("UploadedFile");
+            var filelength = control.files.length;
+
+            for (var i = 0; i < control.files.length; i++) {
+                var file = control.files[i];
+                var FileName = file.name;
+                var FileExt = FileName.substr(FileName.lastIndexOf('.') + 1);
+                if ((FileExt.toUpperCase() != "PDF") && (FileExt.toUpperCase() != "XLS") && (FileExt.toUpperCase() != "XLSX")
+                    && (FileExt.toUpperCase() != "DOC") && (FileExt.toUpperCase() != "DOCS") && (FileExt.toUpperCase() != "PNG")
+                    && (FileExt.toUpperCase() != "JPG") && (FileExt.toUpperCase() != "GIF")) {
+                    //.xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif)
+                    var error = "File type : " + FileExt + "\n\n";
+                    error += "Please make sure your file is in .xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif  format .\n\n";
+                    alert(error);
+                    document.getElementById("UploadedFile").value = "";
+                    return false;
+                }
+            }
+        }
+
+        function checkExternalFileUploadExt(fieldObj) {
+            var control = document.getElementById("UploadedExternalFile");
+            var filelength = control.files.length;
+
+            for (var i = 0; i < control.files.length; i++) {
+                var file = control.files[i];
+                var FileName = file.name;
+                var FileExt = FileName.substr(FileName.lastIndexOf('.') + 1);
+                if ((FileExt.toUpperCase() != "PDF") && (FileExt.toUpperCase() != "XLS") && (FileExt.toUpperCase() != "XLSX")
+                    && (FileExt.toUpperCase() != "DOC") && (FileExt.toUpperCase() != "DOCS") && (FileExt.toUpperCase() != "PNG")
+                    && (FileExt.toUpperCase() != "JPG") && (FileExt.toUpperCase() != "GIF")) {
+                    //.xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif)
+                    var error = "File type : " + FileExt + "\n\n";
+                    error += "Please make sure your file is in .xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif  format .\n\n";
+                    alert(error);
+                    document.getElementById("UploadedFile").value = "";
+                    return false;
+                }
+            }
+        }
+
+        function addEmployee() {
+            var e = document.getElementById("EmpPsNo");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+            var Name_of_Employees = document.getElementById("Name_of_Employees");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.value = strValue;
+            Name_of_Employees.options.add(option);
+            try {
+                var externalEmp = document.getElementById("ExternalEmpPsNo");
+                var strText = externalEmp.options[e.selectedIndex].text;
+                var strValue = externalEmp.options[e.selectedIndex].value;
+                var Name_of_Employees = document.getElementById("External_Name_of_Employees");
+                var option = document.createElement("OPTION");
+                option.innerHTML = strText;
+                option.value = strValue;
+                Name_of_Employees.options.add(option);
+                externalEmp.remove(e.selectedIndex);
+            }
+            catch {
+
+            }
+
+            e.remove(e.selectedIndex);
+
+        }
+        function removeEmployee() {
+            var e = document.getElementById("Name_of_Employees");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+
+            var EmpPsNo = document.getElementById("EmpPsNo");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.selected = true;
+            option.value = strValue;
+            EmpPsNo.options.add(option);
+
+            try {
+
+                var externalEmp = document.getElementById("External_Name_of_Employees");
+                var strText = externalEmp.options[e.selectedIndex].text;
+                var strValue = externalEmp.options[e.selectedIndex].value;
+
+                var EmpPsNo = document.getElementById("ExternalEmpPsNo");
+                var option = document.createElement("OPTION");
+                option.innerHTML = strText;
+                option.selected = true;
+                option.value = strValue;
+                EmpPsNo.options.add(option);
+                externalEmp.remove(e.selectedIndex);
+            }
+            catch {
+
+            }
+            e.remove(e.selectedIndex);
+
+        }
+
+        function addExternalEmployee() {
+
+            var e = document.getElementById("ExternalEmpPsNo");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+            var Name_of_Employees = document.getElementById("External_Name_of_Employees");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.value = strValue;
+            Name_of_Employees.options.add(option);
+            e.remove(e.selectedIndex);
+        }
+        function removeExternalEmployee() {
+
+            var e = document.getElementById("External_Name_of_Employees");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+
+            var EmpPsNo = document.getElementById("ExternalEmpPsNo");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.selected = true;
+            option.value = strValue;
+            EmpPsNo.options.add(option);
+            e.remove(e.selectedIndex);
+        }
+        function ShowParallelRequestInformation() {
+            $('#HideExtenralRequest').show();
+            $('#ShowExtenralRequest').hide();
+            document.getElementById('IsParallel').value = 1;
+            $("#ExternalTab").removeClass("active");
+            $('#ExternalTab').show();
+            FillAgency();
+            //$("#2a").addClass("active");
+            //$("#2a").removeClass("disabled");
+        }
+        function HideParallelRequestInformation() {
+            $('#HideExtenralRequest').hide();
+            $('#ShowExtenralRequest').show();
+            $("#InternalTab").addClass("active");
+
+            //$("#ExternalTab").addClass("disabled");
+            $('#ExternalTab').hide();
+
+            //$('#DivExtenralRequestInformation').hide();
+            //$('#HideExtenralRequest').hide();
+            //$("#ExternalTab").addClass("disabled");
+            //$("#ExternalTab").addClass("active");
+            //$("#1a").addClass("active");
+            //$("#InternalTab").addClass("active");
+            //$('#ExternalTab').hide();
+            //$('#2a').hide();
+            //$('#ShowExtenralRequest').show();
+            document.getElementById('IsParallel').value = 0;
+            //$("#2a").addClass("disabled");
+            //$("#2a").removeClass("active");
+        }
+        function FillAgency() {
+            var agency = document.getElementById("hiddenAgencyName");
+            $.ajax({
+                url: '/ICMS/RequestPlanner/GetAgencyInfromation',
+                type: "GET",
+                dataType: "JSON",
+                data: { RequestType: 0 },
+                success: function (data) {
+                    var markup = "<option value=''>-Select Agency-</option>";
+                    $("#AgcyID").html(""); // clear before appending new list
+                    $.each(data, function (i, item) {
+                        if (agency.value == data[i].Text) {
+                            markup += "<option selected value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+                        else {
+                            markup += "<option value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+
+                        //$("#FrgNo").append($('<option></option>').text(data[i].Text).val(data[i].Value ));
+                    });
+                    /*$("#FrgNo").html(markup).show();*/
+                    $("#AgcyID").append(markup).show();
+                    $('#DivExtenralRequestInformation').show();
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+            });
+        }
+        function CheckInspectorAvaliable(InspectorNo, StartDate, EndDate, InsectorName, PlnID) {
+            //<input type="hidden" name="IsInternalInspectorAvaliable" id="IsInternalInspectorAvaliable"/>
+            $.ajax({
+                async: false,
+                url: '/ICMS/RequestPlanner/CheckInspectorAvaliable',
+                type: "GET",
+                dataType: "JSON",
+                data: { inspectorNo: InspectorNo, startDate: StartDate, endDate: EndDate, PlanID: PlnID },
+                success: function (data) {
+                    if (data != "0") {
+                        alert(InsectorName + " Inspector already assigned")
+                        document.getElementById("IsInternalInspectorAvaliable").value = 'true';
+                    }
+                    else {
+                        document.getElementById("IsInternalInspectorAvaliable").value = 'false';
+                    }
+                    /*$("#FrgNo").html(markup).show();*/
+                },
+                error: function () {
+                    document.getElementById("IsInternalInspectorAvaliable").value = 'true';
+                    alert("Data Not Found");
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,72 @@
+﻿@model ICMS.Models.StatusModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Edit Status</h4>
+    <div style="color:red">
+        @ViewBag.RecordNotExist
+        @ViewBag.RecordException
+    </div>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.StID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StID, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StDesc, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StDesc, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.StDesc, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StRegBy, new { htmlAttributes = new { @readonly = "readonly", @Value = Session["EmpName"].ToString(), @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @*@Html.EditorFor(model => model.StatusField, new { htmlAttributes = new { disabled = "disabled", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StatusField, "", new { @class = "text-danger" })*@
+            @Html.DropDownListFor(model => model.StStatus,
+                new SelectList(new List<SelectListItem> {
+                         new SelectListItem { Text = "Yes", Value = "1"},
+                         new SelectListItem { Text = "No", Value = "0"}
+                     }, "Value", "Text"),
+                "Select status",
+                 new { @class = "form-control", style = "width:30%" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

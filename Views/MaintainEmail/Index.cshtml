@@ -1,0 +1,63 @@
+﻿@model ICMS.Models.MaintainEmailViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>List of Mail Address</h2>
+
+<div style="color:red">@ViewBag.RecordException</div>
+<button type="button" class="btn btn-primary" id="blank-add">
+    <i class="fa fa-plus"></i>
+    <a href="/MaintainEmail/Create" class="btn-primary">
+        Create New
+    </a>
+</button>
+<p>
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+</p>
+
+<table class="table">
+    <tr>
+
+        <th scope="col">Head ID</th>
+        <th scope="col">Project</th>
+        <th scope="col">Mail ID</th>
+        <th scope="col">Mail Type</th>
+        <th scope="col">Register Date & Time</th>
+        <th scope="col">Register By</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+        <th></th>
+    </tr>
+
+    @if (Model.ListEmail != null)
+    {
+        foreach (var item in Model.ListEmail)
+
+        {
+            <tr>
+                <td>@item.HedID</td>
+                <td>@item.Project</td>
+                <td>@item.EmailAddr</td>
+                <td>@item.EmailType</td>
+                <td>@item.RegDttm</td>
+                <td>@item.RegBy</td>
+                <td>@(item.IsActive==1 ? "Active" : "InActive")</td>
+                <td></td>
+
+
+                <td>
+                    <button class="btn btn-default" id="Edit">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.HedID })
+                    </button>
+                    <button class="btn btn-default" id="Details">
+                        @Html.ActionLink("Details", "Details", new { id = item.HedID })
+                    </button>
+                </td>
+            </tr>
+        }
+
+    }
+</table>

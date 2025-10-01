@@ -1,0 +1,523 @@
+﻿@model ICMS.Models.InspReqModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Request";
+}
+<div class="form-horizontal">
+    <h4>Raise Request</h4>
+    <h4><div style="float:right;color:blue">Status:Draft</div></h4>
+    @using (Html.BeginForm("Create", "Initiator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div style="color:red">@ViewBag.RecordException</div>
+        <div style="color:red">@TempData["RecordException"] @TempData["ExistingReqNo"] </div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div>
+                @Html.LabelFor(model => model.PrjNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.DropDownListFor(model => model.ProjectName, new SelectList((List<SelectListItem>)Model.listProject,
+                        "Value", "Text"), "Please Select", new { @class = "form-control", @onchange = "FillCity()" })
+                    @* @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @onfocusout = "FillCity()", @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
+                    @*<input type="text" id="txtCustomer" name="CustomerName" class="form-control" />*@
+                    <input type="hidden" id="hfCustomer" name="CustomerId" />
+                    @*, @onchange = "FillCity()"*@
+                </div>
+            </div>
+            <div>
+                @*@Html.LabelFor(model => model.FrgNo, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <div class="col-md-3">
+                    @*@Html.EditorFor(model => model.FrgNo, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @*@Html.DropDownListFor(model => model.FrgNo,
+                          new SelectList(Enumerable.Empty<SelectListItem>(), "FrgNo", "ForgingInfo"),
+                        new { @class = "form-control" })*@
+                    <input type="hidden" name="hiddenFrgNo" id="hiddenFrgNo" value="@ViewBag.selectedForgNo" />
+                    @*@Html.DropDownListFor("FrgNo", (IEnumerable<SelectListItem>)ViewBag.Forging, "Select Forging", new { @class = "form-control" })*@
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+
+            <div>
+                @Html.LabelFor(model => model.FrgNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    <div style="float:left">
+                        @Html.ListBoxFor(model => model.lstFrgNo, new SelectList(Enumerable.Empty<SelectListItem>(), "FrgNo", "ForgingInfo"), new { @class = "listbox", @style = "width:250px" })
+                    </div>
+                    <div style="float:left">
+                        <div>
+                            <input type="button" value=">>" name="btnAddFrgNo" id="btnAddFrgNo" onclick="return addFrgNo()" />
+                        </div>
+                        <div>
+                            <input type="button" value="<<" name="btnRemoveFrgNo" id="btnRemoveFrgNo" onclick="return removeFrgNo()" />
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    @Html.DropDownListFor(model => model.lstSelectdFrgNo, new SelectList(""), "--Selected Forging--", new { @size = 4, @class = "form-control;listbox", @multiple = "multiple", @style = "width:250px" })
+                    @*<select id="Name_of_Employees" name="Name_of_Employees" Name="Name_of_Employees" Size="5"></select>*@
+                    @*<input type="hidden" name="tempValue" id="tempValue"/>*@
+                    @Html.HiddenFor(o => o.hiddenfieldSelectedFrgNo, new { Name = "hiddenfieldSelectedFrgNo" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                @Html.LabelFor(model => model.StgID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @*@Html.DropDownListFor(m => m.AgcyID, ViewBag.Agency as SelectList, new { @class = "form-control" })*@
+                    @Html.DropDownList("StgID", (IEnumerable<SelectListItem>)ViewBag.stage, "Select Stage", new { @class = "form-control", onchange = "return OnChangeStage(this);" })
+                    @Html.ValidationMessageFor(model => model.StgID, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
+            <div>
+                @Html.LabelFor(model => model.LcID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @*@Html.EditorFor(model => model.LcID, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.DropDownList("LcID", (IEnumerable<SelectListItem>)ViewBag.location, "Select Location", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LcID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                @Html.LabelFor(model => model.OfrDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.OfrDttm, "{0:dd/MM/yyyyTHH:mm}",
+                    new { htmlAttributes = new { @Value = DateTime.Now.AddMinutes(245).ToString("yyyy-MM-ddTHH:mm"), type = "datetime-local", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.OfrDttm, "", new { @class = "text-danger" })
+                    @*<input name="OfrDttm" />*@
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                @Html.LabelFor(model => model.FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @*<input type="file" name="UploadedFile" multiple="multiple" />*@
+                    @Html.TextBoxFor(model => model.UploadedFile, new
+                    {
+                        type = "file",
+                        multiple = "multiple",
+                                     onchange = "return checkFileUploadExt(this);"
+                    })
+                    @Html.ValidationMessageFor(m => m.UploadedFile, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(model => model.RqRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.RqRegBy, new { htmlAttributes = new { @Value = @Session["EmpName"].ToString(), @readonly = "readonly", @class = "form-control" } })
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.RqOts, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.RqOts, new { htmlAttributes = new { @checked = "checked", @class = "form-control" } })
+
+                <b>I am confirming that previous stage(s) in OTS are closed</b>
+                @*@Html.ValidationMessageFor(model => model.RqOts)*@
+            </div>
+        </div>
+        <div class="form-group" style="visibility:hidden">
+            <div>
+                @*<input type="hidden" id="StageName" name="StageName" value="@Model.StageName"/>*@
+                @Html.EditorFor(model => model.StageName, new { htmlAttributes = new { id = "StageName", @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Save" name="Draft" class="btn btn-primary btn-large" />*@
+                <input type="submit" value="Submit" name="Submitted" class="btn btn-primary btn-large" onclick="return CheckValidation(); " />
+                @*<input type="button" value="Submit 1" name="Submitted" class="btn btn-primary btn-large" onclick="return CheckValidation();" />*@
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-primary btn-large" })
+            </div>
+        </div>
+    }
+</div>
+
+
+<div>
+    @*@Html.ActionLink("Back to List", "Index")*@
+</div>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/js/jquery-ui.js"></script>
+    <link href="~/js/jquery-ui.css" rel="Stylesheet"></link>
+    <style type="text/css">
+
+        .ui-autocomplete {
+            max-height: 500px;
+        }
+
+        .ui-menu .ui-menu-divider {
+            margin: 30px 0;
+            height: 0;
+            font-size: 0;
+            line-height: 0;
+            border-width: 1px 0 0 0;
+            color: black;
+        }
+
+        .ui-widget-content {
+            color: black;
+            font-display: block;
+        }
+
+        .ui-autocomplete {
+            /*background: rgba(0, 0, 0, 1);*/
+            border: 0px;
+            border-radius: 2px;
+            position: absolute;
+            left: 50%;
+            margin-left: -336px;
+            display: none;
+            outline: none;
+            z-index: 1000;
+        }
+
+            .ui-autocomplete .ui-menu-item .ui-corner-all {
+                /*background: rgba(0, 0, 0, 0.7);*/
+                font-family: 'Montserrat', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                display: block;
+                clear: both;
+                line-height: 20px;
+                color: #fff;
+                outline-color: none;
+            }
+
+            .ui-autocomplete .ui-menu-item .ui-state-focus {
+                background: none;
+                border: 0px;
+            }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            var d = new Date();
+            var hours = d.getHours() % 12;
+            hours = hours < 10 ? "0" + hours : hours;
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            elem = document.getElementById("OfrDttm")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            var minutes = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+            var seconds = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+            //elem.min = minDate + 'T00:00:00'
+            elem.min = minDate + 'T' + hours + ':' + minutes + ':' + seconds;
+            var PrjectNo = document.getElementById('ProjectName').value;
+
+            if (PrjectNo != "") {
+                FillCity();
+            }
+            $(function () {
+                $("#ProjectName1").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: '/ICMS/Initiator/AutoComplete/',
+                            data: "{ 'prefix': '" + request.term + "'}",
+                            dataType: "json",
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                response($.map(data, function (item) {
+                                    return item.Text;
+                                }))
+                            },
+                            error: function (response) {
+                                //alert(response.responseText);
+                                alert(response.responseText);
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            }
+                        });
+                    },
+                    select: function (e, i) {
+                        $("#hfCustomer").val(i.item.val);
+                    },
+                    minLength: 0
+                }).focus(function () {
+                    $(this).autocomplete("search");
+                });
+            });
+
+            $('#OfrDttm').change(function () {
+
+                if (!ValidateOfferDate()) {
+                  alert(` Please raise call before 4 hours`)
+                }
+            })
+        });
+
+        function ValidateOfferDate() {
+            let diff = new Date($('#OfrDttm').val()) - new Date();
+            let minutes = diff / 1000 / 60;
+            if (minutes < 240) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+}
+<script type="text/javascript">
+
+    //function FillCity() {
+    //    var stateId = $('#ProjectName').val();
+    //    //var procemessage = "<option value=''> Please wait...</option>";
+    //    //$("#FrgNo").html(procemessage).show();
+
+    //    $.ajax({
+    //        url: '/Initiator/GetForgingList',
+    //        type: "GET",
+    //        dataType: "JSON",
+    //        data: { ProjectNo: stateId },
+    //        success: function (result) {
+    //            $("#FrgNo").html(""); // clear before appending new list
+    //            $.each(result, function (i, Value) {
+    //                alert(result[i].Text);
+    //                $("#FrgNo").append(
+    //                    $('<option></option>').val(result[i].Text).html(result[i].Text));
+    //            });
+    //        }
+    //    });
+    //}
+
+    function FillCity() {
+        var stateId = $('#ProjectName').val();
+        //var procemessage = "<option value=''> Please wait...</option>";
+        //$("#FrgNo").html(procemessage).show();
+        var hiddenFrgNo = document.getElementById('hiddenFrgNo').value;
+        var str_array_hiddenFrgNo = hiddenFrgNo.split(',');
+
+
+        $.ajax({
+            url: '/ICMS/Initiator/GetForgingList',
+            type: "GET",
+            dataType: "JSON",
+            data: { ProjectNo: stateId },
+            success: function (data) {
+                var markup = "<option disabled='disabled' value=''>-Select Forging-</option>";
+                var markupSelected = "<option disabled='disabled' value=''>-Selected Forging-</option>";
+                $("#lstFrgNo").html(""); // clear before appending new list
+                $("#lstSelectdFrgNo").html("");
+                if (hiddenFrgNo == "") {
+                    $.each(data, function (i, item) {
+                        if (hiddenFrgNo == "undefined" || hiddenFrgNo == "") {
+                            markup += "<option value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+                        else {
+                            markup += "<option value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+
+                    });
+
+                    //$("#FrgNo").append($('<option></option>').text(data[i].Text).val(data[i].Value ));
+                }
+                else {
+                    $.each(data, function (i, item) {
+
+                        for (var k = 0; k < str_array_hiddenFrgNo.length; k++) {
+                            // Trim the excess whitespace.
+                            str_array_hiddenFrgNo[k] = str_array_hiddenFrgNo[k].replace(/^\s*/, "").replace(/\s*$/, "");
+                            // Add additional code here, such as:
+                            if (str_array_hiddenFrgNo[k] == data[i].Value) {
+                                markupSelected += "<option selected value=" + data[i].Value + ">" +
+                                    data[i].Text + "</option>";
+                            }
+                        }
+
+
+                        //$("#FrgNo").append($('<option></option>').text(data[i].Text).val(data[i].Value ));
+                    });
+                    //var IsNeedToAdd = false;
+                    //$.each(data, function (i, item) {
+                    //    IsNeedToAdd = false;
+                    //    for (var k = 0; k < str_array_hiddenFrgNo.length; k++) {
+                    //        // Trim the excess whitespace.
+                    //        str_array_hiddenFrgNo[k] = str_array_hiddenFrgNo[k].replace(/^\s*/, "").replace(/\s*$/, "");
+                    //        // Add additional code here, such as:
+                    //        if (str_array_hiddenFrgNo[k] != data[i].Value) {
+                    //            IsNeedToAdd = true;
+                    //        }
+                    //        else {
+                    //            IsNeedToAdd = false;
+                    //        }
+                    //    }
+                    //    if (IsNeedToAdd == true) {
+                    //        markup += "<option value=" + data[i].Value + ">" +
+                    //            data[i].Text + "</option>";
+                    //    }
+                    //});
+                    //for (var k = 0; k < str_array_hiddenFrgNo.length; k++) {
+                    //    str_array_hiddenFrgNo[k] = str_array_hiddenFrgNo[k].replace(/^\s*/, "").replace(/\s*$/, "");
+                    //    //$.each(data, function (i, item) {
+                    //    for (var i = 0; i < data.length; i++) {
+                    //        alert(data[i].Value);
+                    //        if (str_array_hiddenFrgNo[k] != data[i].Value) {
+                    //            markup += "<option value=" + data[i].Value + ">" +
+                    //                data[i].Text + "</option>";
+                    //        }
+                    //    }
+                    //}
+                    var dataLen = 0;
+                    if (str_array_hiddenFrgNo.length == 1) {
+                        dataLen = data.length;
+                    }
+                    else {
+                        dataLen = data.length-1;
+                    }
+                    for (var i = 0; i < dataLen; i++) {
+                        //$.each(data, function (i, item) {
+                        for (var k = 0; k < 1; k++) {
+                            str_array_hiddenFrgNo[k] = str_array_hiddenFrgNo[k].replace(/^\s*/, "").replace(/\s*$/, "");
+                           
+                            if (str_array_hiddenFrgNo[k] != data[i].Value) {
+                                markup += "<option value=" + data[i].Value + ">" +
+                                    data[i].Text + "</option>";
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                /*$("#FrgNo").html(markup).show();*/
+                $("#lstFrgNo").append(markup).show();
+                $("#lstSelectdFrgNo").append(markupSelected).show();
+            },
+            error: function () {
+                alert("Data Not Found");
+            }
+        });
+    }
+
+    function checkFileUploadExt(fieldObj) {
+        var control = document.getElementById("UploadedFile");
+        var filelength = control.files.length;
+
+        for (var i = 0; i < control.files.length; i++) {
+            var file = control.files[i];
+            var FileName = file.name;
+            var FileExt = FileName.substr(FileName.lastIndexOf('.') + 1);
+            if ((FileExt.toUpperCase() != "PDF") && (FileExt.toUpperCase() != "XLS") && (FileExt.toUpperCase() != "XLSX")
+                && (FileExt.toUpperCase() != "DOC") && (FileExt.toUpperCase() != "DOCX") && (FileExt.toUpperCase() != "DOCS") && (FileExt.toUpperCase() != "PNG")
+                && (FileExt.toUpperCase() != "JPG") && (FileExt.toUpperCase() != "GIF")) {
+                //.xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif)
+                var error = "File type : " + FileExt + "\n\n";
+                error += "Please make sure your file is in .xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif  format .\n\n";
+                alert(error);
+                document.getElementById("UploadedFile").value = "";
+                return false;
+            }
+        }
+    }
+
+    function OnChangeStage(sel) {
+        var x = sel.options[sel.selectedIndex].text;
+        document.getElementById("StageName").value = x;
+    }
+
+    function addFrgNo() {
+
+        var e = document.getElementById("lstFrgNo"), trend, i;
+        var selectedValue = []
+        for (i = 0; i < e.length; i++) {
+            trend = e[i];
+            if (trend.selected) {
+                if (trend.value != "-Select Forging-") {
+                    selectedValue.push(trend.value);
+                    var Name_of_Employees = document.getElementById("lstSelectdFrgNo");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = trend.text;
+                    option.value = trend.value;
+                    Name_of_Employees.options.add(option);
+                }
+            }
+        }
+        for (var i = 0; i < selectedValue.length; i++) {
+            for (var k = 0; k < e.length; k++) {
+                if (e.options[k].value == selectedValue[i])
+                    e.remove(k);
+            }
+        }
+        //var strText = e.options[e.selectedIndex].text;
+        //var strValue = e.options[e.selectedIndex].value;
+        //if (strText != "-Select Forging-") {
+        //    var Name_of_Employees = document.getElementById("lstSelectdFrgNo");
+        //    var option = document.createElement("OPTION");
+        //    option.innerHTML = strText;
+        //    option.value = strValue;
+        //    Name_of_Employees.options.add(option);
+        //    e.remove(e.selectedIndex);
+        //}
+
+    }
+
+    function removeFrgNo() {
+
+        var e = document.getElementById("lstSelectdFrgNo"), trend, i;
+        var selectedValue = []
+        for (i = 0; i < e.length; i++) {
+            trend = e[i];
+            if (trend.selected) {
+                if (trend.value != "-Selected Forging-") {
+                    selectedValue.push(trend.value);
+                    var Name_of_Employees = document.getElementById("lstFrgNo");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = trend.text;
+                    option.value = trend.value;
+                    Name_of_Employees.options.add(option);
+                }
+            }
+        }
+        for (var i = 0; i < selectedValue.length; i++) {
+            for (var k = 0; k < e.length; k++) {
+                if (e.options[k].value == selectedValue[i])
+                    e.remove(k);
+            }
+        }
+
+    }
+
+    function CheckValidation() {
+        if (!ValidateOfferDate()) {
+            alert(` Please Raise Call Before 4 Hours `);
+            return
+        }
+
+        var lstSelectdFrgNo = document.getElementById("lstSelectdFrgNo");
+        if (lstSelectdFrgNo.length == "1") {
+            alert("Please select Forgin.");
+            return false;
+        }
+        var FrgNo = "";
+        for (var i = 1; i < lstSelectdFrgNo.length; i++) {
+            FrgNo = FrgNo + lstSelectdFrgNo[i].text + ",";
+        }
+
+        document.getElementById('hiddenfieldSelectedFrgNo').value = FrgNo;
+    }
+</script>

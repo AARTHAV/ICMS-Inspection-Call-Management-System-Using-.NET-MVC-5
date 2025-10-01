@@ -1,0 +1,69 @@
+﻿@model ICMS.Models.StageModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Stage details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.StgID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.StgID)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.StgDesc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.StgDesc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.StgRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.StgRegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.StgRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.StgRegBy)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.StgStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.StgStatus)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.StgID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

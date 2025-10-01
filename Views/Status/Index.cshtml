@@ -1,0 +1,110 @@
+﻿@model ICMS.Models.StatusViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .pagination > li > a, .pagination > li > span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>List of status</h2>
+        <p>
+            @Html.ActionLink("Create New", "Create")
+        </p>
+        <p>
+            <label style="color:green">@TempData["TransactionStatus"] </label>
+            <label style="color:red">@TempData["RecordException"] </label>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Status ID</th>
+                    <th>Status Desc</th>
+                    <th>IsActive</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Binding the data in the List-->
+                @if (Model.ListStatus != null)
+                {
+                    for (int i = 0; i < Model.ListStatus.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.ListStatus[i].StID</td>
+                            <td>@Model.ListStatus[i].StDesc</td>
+                            <td>@Model.ListStatus[i].StStatus</td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.ListStatus[i].StID }) |
+                                @Html.ActionLink("Details", "Details", new { id = Model.ListStatus[i].StID })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <!-- Paging -->
+        @if (Model.pager.EndPage > 1)
+        {
+            <ul class="pagination">
+                <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+                @if (Model.pager.CurrentPage > 1)
+                {
+                    <li>
+                        @Html.ActionLink("First", "Index1", new { id = 1 })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Previous", "Index1", new { id = Model.pager.CurrentPage - 1 })
+                    </li>
+                }
+                <!--Paging from StartPage to the end Page-->
+                @for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+                {
+                    <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                        @Html.ActionLink((string)(page).ToString(), "Index1", new { page = Model.pager.CurrentPage + 1 })
+                    </li>
+                }
+                <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+                @if (Model.pager.CurrentPage < Model.pager.TotalPages)
+                {
+                    <li>
+                        @Html.ActionLink("Next", "Index1", new { page = Model.pager.CurrentPage + 1 })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Last", "Index1", new { page = Model.pager.TotalPages })
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+﻿@model ICMS.Models.AgencyMstModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h4>Agency details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <div class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AgID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgID)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AgName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgName)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AgRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgRegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AgRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgRegBy)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AgStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgStatus)
+                </dd>
+
+            </div>
+        }
+    }
+</div>
+
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.AgID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

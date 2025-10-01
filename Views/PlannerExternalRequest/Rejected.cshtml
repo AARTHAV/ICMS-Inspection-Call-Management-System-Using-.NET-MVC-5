@@ -1,0 +1,456 @@
+﻿@model ICMS.Models.GroupHeaderViewModel
+@using System.Globalization;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>List of Request</h4>
+<p>
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+    <label style="color:red">@ViewBag.RecordException </label>
+</p>
+<table class="table table-striped">
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">GroupID</th>
+        <th scope="col">Group Date & Time</th>
+        <th scope="col">Department</th>
+        <th scope="col">Remarks</th>
+        <th scope="col">PS No</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+    </tr>
+    @if (Model.ListGroup != null)
+    {
+        for (int i = 0; i < Model.ListGroup.Count; i++)
+        {
+<tr>
+
+    <td scope="row">
+        <img src="~/img/plus.png" width="15px" />
+        <div style="display:none">
+            <table cellpadding="0" cellspacing="0" class="ChildGrid">
+                <tr>
+                    <th scope="col">Request</th>
+                    <th scope="col">Revision</th>
+                    <th scope="col">Project</th>
+                    <th scope="col">Forging No</th>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Offer Date & Time</th>
+                    <th scope="col">Plan Start Date & Time</th>
+                    <th scope="col">Plan End Date & Time</th>
+                    <th scope="col">Planned On</th>
+                    <th scope="col">Planned By</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">PS Number</th>
+                    <th></th>
+                </tr>
+                @if (Model.ListGroup != null)
+                {
+                    for (int j = 0; j < Model.ListGroup[i].listInspReqModel.Count; j++)
+                    {
+                        <tr>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].RqNo</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].RqRevNo</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].PrjNo</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].FrgNo</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].StageName</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].OfrDttm</td>
+                            <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnStart</td>
+                            <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnEnd</td>
+                            <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnDttm</td>
+                            <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnBy</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].RqDpcd</td>
+                            <td scope="row">@Model.ListGroup[i].listInspReqModel[j].EmployeeID</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                                        name="@Model.ListGroup[i].listInspReqModel[j].RqNo" id="@Model.ListGroup[i].listInspReqModel[j].RqNo"
+                                        onclick="return GetGroupID('@Model.ListGroup[i].listInspReqModel[j].RqNo',
+                                                '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnStart'
+                                                , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnEnd'
+                                                , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnDttm'
+                                                , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnRemark'
+    , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].AgcyID'
+    , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].InsBy'
+    , '@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnID'
+    , '@Model.ListGroup[i].listInspReqModel[j].OfrDttm',
+'@Model.ListGroup[i].listInspReqModel[j].RqRevNo')">
+                                    Reschdule
+                                </button>
+                                @Html.ActionLink("Detach Request", "RemoveGroupRequest", new { id = Model.ListGroup[i].listInspReqModel[j].RqID, data = @Model.ListGroup[i].GroupID }, new { @class = "btn btn-primary btn-large", onclick = "return confirm('Do you want to Remove this request from group?');" })
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </table>
+        </div>
+    </td>
+    <td scope="row"> @Model.ListGroup[i].GroupID</td>
+    <td scope="row">@Model.ListGroup[i].GroupDttm</td>
+    <td scope="row">@Model.ListGroup[i].GroupDpcd</td>
+    <td scope="row">@Model.ListGroup[i].Remark</td>
+    <td scope="row">@Model.ListGroup[i].GroupBy</td>
+    <td scope="row">Rejected</td>
+    <td scope="row">@Html.ActionLink("Resubmit", "ResubmitRequest", new { id = @Model.ListGroup[i].GroupID }, new { @class = "btn btn-primary btn-large", onclick = "return confirm('Do you want to Resubmit this request?');" })</td>
+</tr>
+        }
+
+
+    }
+
+
+</table>
+@if (Model.ListGroup != null)
+{
+    if (Model.ListGroup.Count > 0)
+    {
+        using (Html.BeginForm("ReschduleRequest", "PlannerExternalRequest", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken();
+            <div id="exampleModal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="width:200%;left:-50%">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Replan Request</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExtenalRquestPlnStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExtenalRquestPlnStart, new { htmlAttributes = new { @Value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"), @class = "form-control", @type = "datetime-local", @style = "width:105%;color:blue" } })
+                                        @*@Html.ValidationMessageFor(model => model.ExtenalRquestPlnStart, "", new { @class = "text-danger" })*@
+                                        <div style="visibility:hidden">
+                                            @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ID, new { htmlAttributes = new { @Value = Model.ListGroup[0].listRequestPlannerDetailsModels[0].ID, @readonly = "readonly", @class = "form-control" } })
+                                            @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].RqRevNo, new { htmlAttributes = new { @Value = Model.ListGroup[0].listRequestPlannerDetailsModels[0].RqRevNo, @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                        <input type="hidden" name="offerdate" id="offerdate" value="" />
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExtenalRquestPlnEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExtenalRquestPlnEnd, new { htmlAttributes = new { @class = "form-control", @Value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                                        @*@Html.ValidationMessageFor(model => model.ExtenalRquestPlnEnd, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].PlnBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].PlnBy, new { htmlAttributes = new { @Value = Session["EmpName"].ToString(), @readonly = "readonly", @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].PlnBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExternalPlnRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-5">
+                                        @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExternalPlnRemark, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                        @*@Html.ValidationMessageFor(model => model.ExternalPlnRemark, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].AgcyID, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @*@Html.EditorFor(model => model.FrgNo, new { htmlAttributes = new { @class = "form-control" } })*@
+                                        @Html.DropDownListFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].AgcyID,
+                                      new SelectList(Enumerable.Empty<SelectListItem>(), "AgID", "AgName"),
+                                    new { @class = "form-control" })
+
+                                        @*@Html.ValidationMessageFor(model => model.AgcyID, "", new { @class = "text-danger" })*@
+                                        @*@Html.DropDownListFor("FrgNo", (IEnumerable<SelectListItem>)ViewBag.Forging, "Select Forging", new { @class = "form-control" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @*<input type="file" name="@Model.ListGroup[0].listRequestPlannerDetailsModels[0].UploadedExternalFile"
+                                            id="@Model.ListGroup[0].listRequestPlannerDetailsModels[0].UploadedExternalFile" multiple="multiple" />*@
+                                        @Html.TextBoxFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].UploadedExternalFile, new { type = "file", multiple = "multiple", onchange = "return checkExternalFileUploadExt(this);" })
+                                        @Html.ValidationMessageFor(m => m.ListGroup[0].listRequestPlannerDetailsModels[0].UploadedExternalFile, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].lstEmployee, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-4">
+
+                                        <div style="float:left">
+                                            @Html.ListBoxFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExternalEmpPsNo, (ViewBag.Employee as SelectList), new { @class = "listbox", @style = "width:250px" })
+                                        </div>
+                                        <div style="float:left">
+                                            <div>
+                                                <input type="button" value=">>" name="btnAddEmployee" id="btnExternalAddEmployee" onclick="return addExternalEmployee()" />
+                                            </div>
+                                            <div>
+                                                <input type="button" value="<<" name="btnRemoveEmployee" id="btnExternalRemoveEmployee" onclick="return removeExternalEmployee()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].External_Name_of_Employees, new SelectList(""), "--Selected Insecptor--", new { @size = 4, @class = "form-control;listbox", @multiple = "multiple", @style = "width:250px" })
+                                    @*<select id="Name_of_Employees" name="Name_of_Employees" Name="Name_of_Employees" Size="5"></select>*@
+                                    @*<input type="hidden" name="tempValue" id="tempValue"/>*@
+                                    <div style="visibility:hidden">
+                                        @Html.EditorFor(model => model.ListGroup[0].listRequestPlannerDetailsModels[0].ExternaltempValue, new { htmlAttributes = new { @Value = Model.ListGroup[0].listRequestPlannerDetailsModels[0].ExternaltempValue, @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                    @*@Html.HiddenFor(o => o.ListGroup[0].listRequestPlannerDetailsModels[0].ExternaltempValue, new { Name = "ListGroup_0__listRequestPlannerDetailsModels_0__ExternaltempValue" })*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Save" class="btn btn-primary btn-large" onclick="return CheckDateValidation();" />
+                            <input type="reset" value="Reset" class="btn btn-primary btn-large" onclick="return CheckDateValidation();" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+}
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @*<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .button1 {
+            border-radius: 2px;
+        }
+
+        .button2 {
+            border-radius: 4px;
+        }
+
+        .button3 {
+            border-radius: 8px;
+        }
+
+        .button4 {
+            border-radius: 12px;
+        }
+
+        .button5 {
+            border-radius: 50%;
+        }
+    </style>
+    <script type="text/javascript">
+        //Assign Click event to Plus Image.
+        $("body").on("click", "img[src*='plus.png']", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+            $(this).attr("src", "/img/minus.png");
+            $(this).attr("width", "50px");
+        });
+        //Assign Click event to Minus Image.
+        $("body").on("click", "img[src*='minus.png']", function () {
+            $(this).attr("src", "/img/plus.png");
+            $(this).attr("width", "15px");
+            $(this).closest("tr").next().remove();
+        });
+        function CheckDateValidation() {
+            var plnStart = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnStart');
+            var PlnEnd = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnEnd');
+            var OfrDttm = document.getElementById('offerdate');
+            var ExtenalRemark = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__ExternalPlnRemark');
+            var AgcyID = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__AgcyID');
+            var Name_of_Employees = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__External_Name_of_Employees");
+            if (Date.parse(plnStart.value) < Date.parse(OfrDttm.Value)) {
+                alert('Please select Plan Start After Internal End Date and Internal Plan End Date is ' + OfrDttm.Value);
+                return false;
+            }
+            else if (Date.parse(PlnEnd.value) <= Date.parse(plnStart.value)) {
+                alert('Please select Plan End Date After Plan Start Date');
+                return false;
+            }
+            if (ExtenalRemark.value.trim().length == 0) {
+                alert('Please Enter External Request Remark');
+                return false;
+            }
+            if (AgcyID.value == "") {
+                alert('Please Select Agency');
+                return false;
+            }
+            if (Name_of_Employees.length == 1) {
+                alert('Please select inspector');
+                return false;
+            }
+            var inspector = "";
+            for (var i = 1; i < Name_of_Employees.length; i++) {
+                inspector = inspector + Name_of_Employees[i].value + ",";
+            }
+            document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__ExternaltempValue').value = inspector;
+
+        }
+
+        function GetGroupID(RqID, PlnStart, PlnEndDate, PlnDateOn, Remark, AgencyID, InsPsNo, PlnID, offerdate, RqRevNo) {
+            elem = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnStart")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+            var offerTime = PlnStart.substring(10, PlnStart.length);
+            var newdate = PlnStart.substring(0, 10).split("-").reverse().join("-");
+            elem.value = newdate + 'T' + offerTime.trim()
+
+            elem = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnEnd")
+            var iso = new Date().toISOString();
+            var minDate = iso.substring(0, iso.length - 14);
+            elem.min = minDate + 'T00:00:00'
+            var offerTime = PlnEndDate.substring(10, PlnEndDate.length);
+            var newdate = PlnEndDate.substring(0, 10).split("-").reverse().join("-");
+            elem.value = newdate + 'T' + offerTime.trim()
+
+            var offerTime = offerdate.substring(10, offerdate.length);
+            var newdate = offerdate.substring(0, 10).split("-").reverse().join("-");
+
+            //document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnStart").Value = finaloutputPlnStartDate;
+            //document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExtenalRquestPlnEnd").Value = PlnEndDate;
+            document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExternalPlnRemark").innerHTML = Remark;
+            document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ID").value = PlnID;
+            document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__RqRevNo").value = RqRevNo;
+            document.getElementById("offerdate").Value = newdate + offerTime;
+            FillAgency(AgencyID);
+            FillInspector(InsPsNo);
+        }
+
+        function FillAgency(AgencyID) {
+            $.ajax({
+                url: '/ICMS/PlannerExternalRequest/GetAgencyInfromation',
+                type: "GET",
+                dataType: "JSON",
+                data: { RequestType: 0 },
+                success: function (data) {
+                    var markup = "<option value=''>-Select Agency-</option>";
+                    $("#ListGroup_0__listRequestPlannerDetailsModels_0__AgcyID").html(""); // clear before appending new list
+                    $.each(data, function (i, item) {
+                        if (data[i].Value == AgencyID) {
+                            markup += "<option selected value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+                        else {
+                            markup += "<option value=" + data[i].Value + ">" +
+                                data[i].Text + "</option>";
+                        }
+
+                        //$("#FrgNo").append($('<option></option>').text(data[i].Text).val(data[i].Value ));
+                    });
+                    /*$("#FrgNo").html(markup).show();*/
+                    $("#ListGroup_0__listRequestPlannerDetailsModels_0__AgcyID").append(markup).show();
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+            });
+        }
+
+        function FillInspector(InsPsNo) {
+            if (!InsPsNo.includes(",")) {
+                InsPsNo += ',';
+            }
+            var str_array = InsPsNo.split(',');
+            var External_Name_of_Employees = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__ExternalEmpPsNo');
+            var External_Name_of_SelectedEmployees = document.getElementById('ListGroup_0__listRequestPlannerDetailsModels_0__External_Name_of_Employees');
+            var Externalinspector = "";
+            for (var i = 0; i < str_array.length; i++) {
+                // Trim the excess whitespace.
+                str_array[i] = str_array[i];
+                // Add additional code here, such as:
+                for (var j = 0; j < External_Name_of_Employees.length; j++) {
+                    if (str_array[i] == External_Name_of_Employees[j].value) {
+                        var option = document.createElement("OPTION");
+                        option.innerHTML = External_Name_of_Employees[j].text;
+                        option.value = External_Name_of_Employees[j].value;
+                        External_Name_of_SelectedEmployees.options.add(option);
+                        External_Name_of_Employees.remove(j);
+                    }
+                }
+            }
+        }
+        function checkExternalFileUploadExt(fieldObj) {
+            var control = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__UploadedExternalFile");
+            var filelength = control.files.length;
+
+            for (var i = 0; i < control.files.length; i++) {
+                var file = control.files[i];
+                var FileName = file.name;
+                var FileExt = FileName.substr(FileName.lastIndexOf('.') + 1);
+                if ((FileExt.toUpperCase() != "PDF") && (FileExt.toUpperCase() != "XLS") && (FileExt.toUpperCase() != "XLSX")
+                    && (FileExt.toUpperCase() != "DOC") && (FileExt.toUpperCase() != "DOCS") && (FileExt.toUpperCase() != "PNG")
+                    && (FileExt.toUpperCase() != "JPG") && (FileExt.toUpperCase() != "GIF")) {
+                    //.xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif)
+                    var error = "File type : " + FileExt + "\n\n";
+                    error += "Please make sure your file is in .xls|.xlsx|.doc|.docx|.pdf|.png|.jpg|.gif  format .\n\n";
+                    alert(error);
+                    document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__UploadedExternalFile").value = "";
+                    return false;
+                }
+            }
+        }
+        function addExternalEmployee() {
+            var e = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExternalEmpPsNo");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+            var Name_of_Employees = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__External_Name_of_Employees");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.value = strValue;
+            Name_of_Employees.options.add(option);
+            e.remove(e.selectedIndex);
+        }
+        function removeExternalEmployee() {
+            var e = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__External_Name_of_Employees");
+            var strText = e.options[e.selectedIndex].text;
+            var strValue = e.options[e.selectedIndex].value;
+
+            var EmpPsNo = document.getElementById("ListGroup_0__listRequestPlannerDetailsModels_0__ExternalEmpPsNo");
+            var option = document.createElement("OPTION");
+            option.innerHTML = strText;
+            option.selected = true;
+            option.value = strValue;
+            EmpPsNo.options.add(option);
+            EmpPsNo.options.add(option);
+            e.remove(e.selectedIndex);
+
+        }
+    </script>
+}

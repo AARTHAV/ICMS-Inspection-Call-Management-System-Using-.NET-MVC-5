@@ -1,0 +1,93 @@
+﻿@model ICMS.Models.InspReqModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View</title>
+    <script>
+        //function FillCity() {
+        //    var stateId = $('#ProjectName').val();
+        //    //var procemessage = "<option value=''> Please wait...</option>";
+        //    //$("#FrgNo").html(procemessage).show();
+
+        //    $.ajax({
+        //        url: '/Initiator/GetForgingList',
+        //        type: "GET",
+        //        dataType: "JSON",
+        //        data: { ProjectNo: stateId },
+        //        success: function (result) {
+        //            $("#FrgNo").html(""); // clear before appending new list
+        //            $.each(result, function (i, Value) {
+        //                alert(result[i].Text);
+        //                $("#FrgNo").append(
+        //                    $('<option></option>').val(result[i].Text).html(result[i].Text));
+        //            });
+        //        }
+        //    });
+        //}
+
+        function FillCity() {
+            var stateId = $('#ProjectName').val();
+            //var procemessage = "<option value=''> Please wait...</option>";
+            //$("#FrgNo").html(procemessage).show();
+
+            $.ajax({
+                url: '/Initiator/GetForgingList',
+                type: "GET",
+                dataType: "JSON",
+                data: { ProjectNo: stateId },
+                success: function (data) {
+                    var markup = "<option value=''>-Select Option-</option>";
+                    $("#FrgNo").html(""); // clear before appending new list
+                    $.each(data, function (i, item) {
+                        markup += "<option value=" + data[i].Value + ">" +
+                            data[i].Text + "</option>";
+                        //$("#FrgNo").append($('<option></option>').text(data[i].Text).val(data[i].Value ));
+                    });
+                    /*$("#FrgNo").html(markup).show();*/
+                    alert(markup);
+                    $("#FrgNo").append(markup).show();
+                },
+                error: function () {
+                    alert("Data Not Found");
+                }
+            });
+        }
+
+
+    </script>
+</head>
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>InspReqModel</h4>
+            <hr />
+            <div class="form-group">
+                @Html.EditorFor(m => m.OfrDttm,
+          new { htmlAttributes = new { @Value = @DateTime.Now.ToShortDateString(), @class = "form-control datepicker" } })
+
+                @Html.ValidationMessageFor(model => model.OfrDttm, "", new { @class = "text-danger" })
+                <input class="form-control" type="date" value="@Model.OfrDttm.Value.ToString("yyyy-MM-dd")" asp-for="DateTime" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                <input class="form-control" type="time" value="@Model.OfrDttm.Value.ToString("HH:MM")" asp-for="DateTime" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+</html>

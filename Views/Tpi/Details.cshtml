@@ -1,0 +1,105 @@
+﻿@model ICMS.Models.TpiMstModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #dt{
+        width:20%;
+        text-align:inherit;
+    }
+</style>
+<div>
+    <h4>Agency Employee details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+               
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpID)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.AgName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AgName)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpName)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpMob)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpMob)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpMail)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpMail)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpPrm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpPrm)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpRegDttm)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpRegBy)
+                </dd>
+
+                <dt id="dt">
+                    @Html.DisplayNameFor(model => model.TpStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TpStatus)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.TpID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

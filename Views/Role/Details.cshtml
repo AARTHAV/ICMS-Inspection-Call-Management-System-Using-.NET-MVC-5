@@ -1,0 +1,67 @@
+﻿@model ICMS.Models.RoleMsModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h4>Role details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RoID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoID)
+                </dd>
+
+              <dt>
+                    @Html.DisplayNameFor(model => model.RoDesc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoDesc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RoRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoRegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RoRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoRegBy)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RoStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoStatus)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.RoID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

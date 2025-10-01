@@ -1,0 +1,76 @@
+﻿@model ICMS.Models.RoleMsViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List of roles</h2>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<p>
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+</p>
+<div>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>Role ID</th>
+            <th>Role Desc</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        @if (Model.ListRoleMaster != null)
+        {
+            for (int i = 0; i < Model.ListRoleMaster.Count; i++)
+            {
+                <tr>
+                    <td>@Model.ListRoleMaster[i].RoID</td>
+                    <td>@Model.ListRoleMaster[i].RoDesc</td>
+                    <td>@Model.ListRoleMaster[i].RoStatus</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.ListRoleMaster[i].RoID }) |
+                        @Html.ActionLink("Details", "Details", new { id = Model.ListRoleMaster[i].RoID })
+                    </td>
+                </tr>
+            }
+        }
+
+
+    </table>
+    @if (Model.pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+            @if (Model.pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink("First", "Index", new { id = 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Previous", "Index", new { id = Model.pager.CurrentPage - 1 })
+                </li>
+            }
+            <!--Paging from StartPage to the end Page-->
+            @for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+            {
+                <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink((string)(page).ToString(), "Index", new { page = Model.pager.CurrentPage + 1 })
+                </li>
+            }
+            <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+            @if (Model.pager.CurrentPage < Model.pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink("Next", "Index", new { page = Model.pager.CurrentPage + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Last", "Index", new { page = Model.pager.TotalPages })
+                </li>
+            }
+        </ul>
+    }
+</div>
+

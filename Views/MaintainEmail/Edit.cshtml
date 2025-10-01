@@ -1,0 +1,122 @@
+﻿@model ICMS.Models.MaintainEmailModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4></h4>
+        <div style="color:red">@ViewBag.RecordException</div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HedID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HedID, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HedID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+   <div class="form-group">
+            @Html.LabelFor(model => model.Project, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Project, new { htmlAttributes = new {  @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailAddr, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmailAddr, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmailAddr, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.EmailType,
+                                new SelectList(new List<SelectListItem> {
+                                         new SelectListItem { Text = "TO", Value = "TO"},
+                                         new SelectListItem { Text = "CC", Value = "CC"}
+                                     }, "Value", "Text"),
+                                "Select Type",
+                                 new { @class = "form-control", style = "width:30%" })
+                @Html.ValidationMessageFor(model => model.EmailType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+                @Html.LabelFor(model => model.RegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RegBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RegBy, "", new { @class = "text-danger" })
+                </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.IsActive,
+                                new SelectList(new List<SelectListItem> {
+                                         new SelectListItem { Text = "Yes", Value = "1"},
+                                         new SelectListItem { Text = "No", Value = "0"}
+                                     }, "Value", "Text"),
+                                "Select status",
+                                 new { @class = "form-control", style = "width:30%" })
+                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.RegDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RegDttm, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RegDttm, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.RegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RegBy, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RegBy, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<button type="button" class="btn btn-primary" id="blank-add">
+    <i class="fa fa-plus"></i>
+    <a href="/MaintainEmail/Index" class="btn-primary">
+        Back to List
+    </a>
+</button>
+
+@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

@@ -1,0 +1,99 @@
+﻿@model ICMS.Models.EmailTempModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Email template details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.EtempID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EtempID)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EtempType)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EtempType)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EtempSub)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EtempSub)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EmtpCont)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EmtpCont)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EmtpTo)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EmtpTo)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EmtpCc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EmtpCc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RegBy)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Status)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.EtempID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

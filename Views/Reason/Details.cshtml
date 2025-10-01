@@ -1,0 +1,68 @@
+﻿@model ICMS.Models.ReasonMstModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Reason details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RsnID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RsnID)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RsnDesc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RsnDesc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RsnRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RsnRegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RsnRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RsnRegBy)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RsnStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RsnStatus)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.RsnID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "Generate Calender Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Generate Calender Report</h4>
+<div id="calender"></div>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+            </div>
+            <div class="modal-body">
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />*@
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+        integrity="sha512-bnIvzh6FU75ZKxp0GXLH9bewza/OIw6dLVh9ICg0gogclmYGguQJWl8U30WpbsGTqbIiAwxTsbe76DErLq5EDQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>*@
+<script src="~/js/jquery-3.4.1.js" integrity="sha512-bnIvzh6FU75ZKxp0GXLH9bewza/OIw6dLVh9ICg0gogclmYGguQJWl8U30WpbsGTqbIiAwxTsbe76DErLq5EDQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@section Scripts{
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/fullcalendar.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var events = [];
+            $.ajax({
+                type: "GET",
+                url: "/RequestPlanner/GetAssignedInspectorReport",
+                success: function (data) {
+                    $.each(data, function (i, v) {
+                        if (v.ExternaltempValue = "Assigned") {
+                            events.push({
+                                title: v.tempValue,
+                                description: v.PlnRemark,
+                                RqNo: v.RqNo,
+                                RqRevNo: v.RqRevNo,
+                                RequestType: v.RqstType,
+                                Stage: v.ExternaltempValue,
+                                ProjectNo: v.ProjectNo,
+                                ForgingNo: v.ForgingNo,
+                                start: moment(v.PlnStart),
+                                end: v.PlnEnd != null ? moment(v.PlnEnd) : null,
+                                color: "LightGrey",
+                                allDay: v.IsFullDay,
+                            });
+                        }
+                        if (v.ExternaltempValue = "Replanned") {
+                            events.push({
+                                title: v.tempValue,
+                                description: v.PlnRemark,
+                                RqNo: v.RqNo,
+                                RqRevNo: v.RqRevNo,
+                                RequestType: v.RqstType,
+                                Stage: v.ExternaltempValue,
+                                ProjectNo: v.ProjectNo,
+                                ForgingNo: v.ForgingNo,
+                                start: moment(v.PlnStart),
+                                end: v.PlnEnd != null ? moment(v.PlnEnd) : null,
+                                color: "LightGrey",
+                                allDay: v.IsFullDay,
+                            });
+                        }
+                        if (v.ExternaltempValue = "Submited for Approval") {
+                            events.push({
+                                title: v.tempValue,
+                                description: v.PlnRemark,
+                                RqNo: v.RqNo,
+                                RqRevNo: v.RqRevNo,
+                                RequestType: v.RqstType,
+                                Stage: v.ExternaltempValue,
+                                ProjectNo: v.ProjectNo,
+                                ForgingNo: v.ForgingNo,
+                                start: moment(v.PlnStart),
+                                end: v.PlnEnd != null ? moment(v.PlnEnd) : null,
+                                color: "LightGrey",
+                                allDay: v.IsFullDay,
+                            });
+                        }
+                        else {
+                            events.push({
+                                title: v.tempValue,
+                                description: v.PlnRemark,
+                                RqNo: v.RqNo,
+                                RqRevNo: v.RqRevNo,
+                                RequestType: v.RqstType,
+                                Stage: v.ExternaltempValue,
+                                ProjectNo: v.ProjectNo,
+                                ForgingNo: v.ForgingNo,
+                                start: moment(v.PlnStart),
+                                end: v.PlnEnd != null ? moment(v.PlnEnd) : null,
+                                allDay: v.IsFullDay,
+                            });
+                        }
+                    })
+                    GenerateCalender(events);
+                },
+                error: function (error) {
+                    alert(error.statusText);
+                }
+            })
+
+            function GenerateCalender(events) {
+                $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar({
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>RqNo:</b>' + calEvent.RqNo));
+                        $description.append($('<p/>').html('<b>RqRevNo:</b>' + calEvent.RqRevNo));
+                        $description.append($('<p/>').html('<b>RequestType:</b>' + calEvent.RequestType));
+                        $description.append($('<p/>').html('<b>Status:</b>' + calEvent.Stage));
+                        $description.append($('<p/>').html('<b>ProjectNo:</b>' + calEvent.ProjectNo));
+                        $description.append($('<p/>').html('<b>ForgingNo:</b>' + calEvent.ForgingNo));
+                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        }
+                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $('#myModal #pDetails').empty().html($description);
+
+                        $('#myModal').modal();
+                    }
+                })
+            }
+        })
+    </script>
+}

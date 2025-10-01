@@ -1,0 +1,164 @@
+﻿@model ICMS.Models.RequestPlannerDetailsViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>List of Planner</h4>
+
+<form method="get" action="@Url.Action("Search", "RequestPlanner")">
+    <div class="form-group">
+        <div>
+            <div class="col-md-3">
+                @Html.DropDownList("StID", (IEnumerable<SelectListItem>)ViewBag.Status, "Select Status", new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="searchText" id="searchText" value="@ViewBag.SearchData" class="form-control" />
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-default">search</button>
+            @Html.ActionLink("Reset", "Index", "RequestPlanner", new { @class = "btn btn-default" })
+        </div>
+
+    </div>
+</form>
+<p>
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+    <label style="color:red">@ViewBag.RecordNotExist </label>
+</p>
+<table class="table table-striped">
+    <tr>
+        <th scope="col">Request</th>
+        <th scope="col">Revision</th>
+        <th scope="col">Project</th>
+        <th scope="col">Forging No</th>
+        <th scope="col">Stage</th>
+        <th scope="col">Offer Date & Time</th>
+        <th scope="col">Department</th>
+        <th scope="col">Emp Name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Request Type</th>
+        @*<th scope="col"></th>*@
+    </tr>
+    @if (Model.ListRequestPlannerDetails != null)
+    {
+        for (int i = 0; i < Model.ListRequestPlannerDetails.Count; i++)
+        {
+            <tr>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqNo</td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqRevNo</td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].PrjNo</td>
+                <td scope="row"><label style="font-weight: 100; width: 50%; inline-size: 150px; overflow: hidden; word-break:break-all;">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].FrgNo</label></td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].StageName</td>
+                <td scope="row"><label style="font-weight: 100; width: 50%; inline-size: 150px;">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].OfrDttm</label></td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqDpcd</td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].EmployeeName</td>
+                <td scope="row">@Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus</td>
+                <td scope="row">
+                    @Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqTypeName
+                </td>
+                <td scope="row">
+                    @if (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Assigned" ||
+                        Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Replanned" ||
+                        Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Not Planned")
+                    {
+                        @Html.ActionLink("Replan", "Create", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID });
+                    }
+                    @if (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Submitted")
+                    {@Html.ActionLink("Plan", "Create", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID })}
+                    @if (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Planned & not allocated" && Model.ListRequestPlannerDetails[i].objInspReqModel[i].AgencyName == "0")
+                    {@Html.ActionLink("External Req. Plan", "Create", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID })}
+                    @if ((Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Closed") || (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Return") || (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Submited for Approval") || (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Planned & not allocated" && Model.ListRequestPlannerDetails[i].objInspReqModel[i].AgencyName != "0"))
+                    {@Html.ActionLink("View", "Create", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID }) } @*@Html.ActionLink("Details", "Details", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID })*@
+                    @*@if (Model.ListRequestPlannerDetails[i].ReasonName == "0" &&
+                            Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Closed" &&
+                            Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqTypeName == "External" &&
+                            Model.ListRequestPlannerDetails[i].objInspReqModel[i].IsUpdateExternalRequest == "1")
+                        {
+                            @Html.ActionLink("Replan External Req.", "RecreateExternalRequest", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID });
+
+                        }*@
+                    @if (Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqTypeName == "External" && Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqStatus == "Return" &&
+                            Convert.ToInt32(Model.ListRequestPlannerDetails[i].objInspReqModel[i].IsUpdateExternalRequest) >= 1
+                            && Convert.ToInt32(Model.ListRequestPlannerDetails[i].objInspReqModel[i].IsUpdateInternalReturnRequest) == 0)
+                    {
+                        @Html.ActionLink("Replan", "Create", new { id = Model.ListRequestPlannerDetails[i].objInspReqModel[i].RqID, data = @Model.ListRequestPlannerDetails[i].objInspReqModel[i].PlanID });
+                    }
+                </td>
+            </tr>
+        }
+    }
+
+
+</table>
+
+@if (Model.pager.EndPage > 1)
+{
+    <ul class="pagination">
+        @if (ViewBag.IsSearch == "false")
+        {
+            if (Model.pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink("First", "Index", new { id = 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Previous", "Index", new { id = Model.pager.CurrentPage - 1 })
+                </li>
+            }
+            <!--Paging from StartPage to the end Page-->
+            for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+            {
+                <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink((string)(page).ToString(), "Index", new { page = Model.pager.CurrentPage + 1 })
+                </li>
+            }
+            <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+            if (Model.pager.CurrentPage <= Model.pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink("Next", "Index", new { page = Model.pager.CurrentPage + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Last", "Index", new { page = Model.pager.TotalPages })
+                </li>
+            }
+        }
+        else
+        {
+            if (Model.pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink("First", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage < 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Previous", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage - 1 })
+                </li>
+            }
+            <!--Paging from StartPage to the end Page-->
+            for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+            {
+                <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink((string)(page).ToString(), "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = page })
+                </li>
+            }
+            <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+            if (Model.pager.CurrentPage <= Model.pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink("Next", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink("Last", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.TotalPages })
+                </li>
+            }
+        }
+
+        <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+
+
+    </ul>
+}
+

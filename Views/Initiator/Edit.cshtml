@@ -1,0 +1,239 @@
+﻿@model ICMS.Models.InspReqModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("Edit", "Initiator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edit Request</h4>
+        <h4><div style="float: right; color: blue">Status:@Html.DisplayFor(model => model.RqStatus)</div></h4>
+        <div style="color:red">
+            @ViewBag.RecordNotExist
+            @ViewBag.RecordException
+            @TempData["RecordException"]
+        </div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @if (ViewBag.RecordNotExist == null)
+        {
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.RqNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.HiddenFor(model => model.RqID)
+                        @Html.EditorFor(model => model.RqNo, new { htmlAttributes = new { @readonly = "readonly", @style = "width:35%;float:left;color:blue", @class = "form-control" } })
+                        <div>
+                            @Html.EditorFor(model => model.RqRevNo, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @readonly = "readonly",
+                                    @style = "width:35%;color:blue",
+                                    @class = "form-control"
+                                }
+                            })
+                        </div>
+                    </div>
+
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.RqRegDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3" style="margin-top:6px">
+                        @Model.RqRegDttm
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.PrjNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PrjNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.FrgNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.FrgNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.RqType, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.RqTypeName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.StageName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.StageName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.RqRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.RqRegBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.OfrDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(m => m.OfrDttm,
+                    new { htmlAttributes = new { @class = "form-control", @Value = Model.OfrDttm.Value.ToString("yyyy-MM-ddTHH:mm"), @type = "datetime-local" } })
+                        @Html.ValidationMessageFor(model => model.OfrDttm, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.RqDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.RqDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @*<input type="file" name="UploadedFile" multiple="multiple" />*@
+                        @Html.TextBoxFor(model => model.UploadedFile, new
+                        {
+                            type = "file",
+                            multiple = "multiple",
+                                         onchange = "return checkFileUploadExt(this);"
+                        })
+                        @Html.ValidationMessageFor(m => m.UploadedFile, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.LcName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.DropDownList("LcID", (IEnumerable<SelectListItem>)ViewBag.location, "Select Location", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div>
+
+                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.ResnID, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.DropDownList("ResnID", (IEnumerable<SelectListItem>)ViewBag.Reason, "Select Reason", new { @class = "form-control" })
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @if (Model.RqStatus != "Closed" && Model.RqStatus != "Assigned")
+                    {
+                        if (Model.RqStatus != "Submitted")
+                        {
+                            if (!string.IsNullOrEmpty(Session["EmpPsNo"] as string))
+                            {
+                                if (Model.EmployeeID == Session["EmpPsNo"].ToString())
+                                {
+                                    <input type="submit" value="Save" name="Draft" class="btn btn-primary btn-large" />
+                                }
+                            }
+
+                        }
+                        if (!string.IsNullOrEmpty(Session["EmpPsNo"] as string))
+                        {
+                            if (Model.EmployeeID == Session["EmpPsNo"].ToString())
+                            {
+                                <input type="submit" value="Submit" name="Submitted" class="btn btn-primary btn-large" onclick="return checkValidation()" />
+                                @*<input type="button" value="Submit1" name="Submitted" class="btn btn-primary btn-large" onclick="return checkValidation()" />*@
+                            }
+                        }
+                    }
+                    
+                    @Html.ActionLink("Close", "Index", null, new { @class = "btn btn-primary btn-large" })
+                </div>
+            </div>
+            <hr />
+            <table class="table table-striped">
+                <tr>
+                    <th scope="col">Document Name</th>
+                    <th scope="col">Upload By</th>
+                    <th scope="col">Upload Date</th>
+                    <th scope="col"></th>
+                </tr>
+                @if (Model.lstDocument != null)
+                {
+                    for (int i = 0; i < Model.lstDocument.Count; i++)
+                    {
+                        <tr>
+                            <td scope="row">@Model.lstDocument[i].DocName</td>
+                            <td scope="row">@Model.lstDocument[i].UpldBy</td>
+                            <td scope="row">@Model.lstDocument[i].UpldDttm</td>
+                            <td scope="row">
+                                @Html.ActionLink("Remove", "DeleteDoc", new { id = Model.lstDocument[i].DocID, data = Model.RqID },
+                               new { onclick = "return confirm('Are you sure you wish to delete this document?');" })
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>No Document avaliable</td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            @Html.ActionLink("Back to List", "Index")
+        }
+
+
+    </div>
+}
+
+<div>
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        function checkValidation() {
+            var ResnID = document.getElementById('ResnID');
+            if (ResnID.value == "") {
+                alert("Please select reason");
+                return false;
+            }
+            var LcID = document.getElementById('LcID');
+            if (LcID.value == "") {
+                alert("Please select location");
+                return false;
+            }
+         
+        }
+    </script>
+}

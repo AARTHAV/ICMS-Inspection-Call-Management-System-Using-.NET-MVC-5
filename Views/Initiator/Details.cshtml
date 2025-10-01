@@ -1,0 +1,448 @@
+﻿@model ICMS.Models.InspReqModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h4>Request details</h4>
+    <h4><div style="float: right; color: blue">Status:@Html.DisplayFor(model => model.RqStatus)</div></h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+        <div>
+            <div>
+                @Html.ActionLink("Close", "Index", null, new { @class = "btn btn-primary btn-large" })
+
+
+                @if (@ViewBag.RecordNotExist == null)
+                {
+                    if (Model.RqStatus == "Draft")
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.RqID }, new { @class = "btn btn-primary btn-large" })
+                    }
+
+                }
+                @if (@ViewBag.RecordNotExist == null)
+                {
+                    if (Model.RqStatus == "Submitted")
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.RqID }, new { @class = "btn btn-primary btn-large" })
+                    }
+
+                }
+            </div>
+            <div class="card" id="DivBusiness" runat="server" visible="false">
+
+                <div class="card-header">
+                    <b>Initiator Information</b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.RqNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.RqNo, new { htmlAttributes = new { @readonly = "readonly", @style = "width:35%;float:left;color:blue", @class = "form-control" } })
+                                <div>
+                                    @Html.EditorFor(model => model.RqRevNo, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @readonly = "readonly",
+                                            @style = "width:35%;color:blue",
+                                            @class = "form-control"
+                                        }
+                                    })
+                                </div>
+                                @*@Html.EditorFor(model => model.RqRevNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })*@
+                            </div>
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.RqRegDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                @Html.DisplayFor(model => model.RqRegDttm)
+                                <div style="visibility:hidden">
+                                    @Html.EditorFor(model => model.RqRegDttm, new { htmlAttributes = new { @value = @Model.RqRegDttm, @readonly = "readonly", @class = "form-control" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.PrjNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.PrjNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.FrgNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="height:50px">
+                                @Html.EditorFor(model => model.FrgNo, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.RqType, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.RqTypeName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.StageName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="height:50px">
+                                @Html.EditorFor(model => model.StageName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.LcName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.LcName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="height:60px">
+                                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.OfrDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Model.OfrDttm
+                            </div>
+
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.RqRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="height:50px">
+                                @Html.EditorFor(model => model.RqRegBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelFor(model => model.RqDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3" style="height:50px">
+                                @Html.EditorFor(model => model.RqDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div style="visibility:hidden">
+                            @Html.LabelFor(model => model.RqDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="height:50px">
+                                @Html.EditorFor(model => model.RqDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card" id="DivBusiness" runat="server" visible="false">
+
+                <div class="card-header">
+                    <b>Planner Information</b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    @if (Model.lstRequest.Count > 0)
+                    {
+                        for (int i = 0; i < 1; i++)
+                        {
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnStart, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-4" style="height:50px">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnEnd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-4" style="height:50px">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnDttm, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-3" style="height:60px">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnDttm, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.LabelFor(model => @Model.lstRequest[i].PlnRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-4" style="height:60px">
+                                        @Html.EditorFor(model => @Model.lstRequest[i].PlnRemark, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                            if (Model.RqTypeName == "External")
+                            {
+                                <div class="form-group">
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].AgencyName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => @Model.lstRequest[i].AgencyName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="card" id="DivBusiness" runat="server" visible="false">
+
+                <div class="card-header">
+                    <b>Inspector Information</b>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    @if (Model.lstRequest.Count > 0)
+                    {
+                        for (int i = 0; i < 1; i++)
+                        {
+                            if (@Model.lstRequest[i].ActulStart.HasValue)
+                            {
+                                <div class="form-group">
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].ActulStart, htmlAttributes: new { @class = "control-label col-md-3" })
+                                        <div class="col-md-2" style="left:-8%">
+                                            @Model.lstRequest[i].ActulStart
+                                            <div style="visibility:hidden">
+                                                @Html.EditorFor(model => model.RqRegDttm, new { htmlAttributes = new { @value = @Model.RqRegDttm, @readonly = "readonly", @class = "form-control" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].ActulEnd, htmlAttributes: new { @class = "control-label col-md-3" })
+                                        <div class="col-md-3" style="left:-8%">
+                                            @Model.lstRequest[i].ActulEnd
+                                            <div style="visibility:hidden">
+                                                @Html.EditorFor(model => model.RqRegDttm, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].InsBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => @Model.lstRequest[i].InsBy, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <div>
+                                        @*@Model.lstRequest[i].InsDttm.Value.ToString("dd/MM/yyyy hh:MM:tt")*@
+                                        @Html.LabelFor(model => @Model.lstRequest[i].InsDttm, htmlAttributes: new { @class = "control-label col-md-3" })
+                                        <div class="col-md-3" style="left:-8%">
+                                            @Model.lstRequest[i].InsDttm
+                                            <div style="visibility:hidden">
+                                                @Html.EditorFor(model => model.RqRegDttm, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].InspDpcd, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => @Model.lstRequest[i].InspDpcd, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].InspRemark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-4">
+                                            @Html.EditorFor(model => @Model.lstRequest[i].InspRemark, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        @Html.LabelFor(model => @Model.lstRequest[i].ReasonName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => @Model.lstRequest[i].ReasonName, new { htmlAttributes = new { @readonly = "readonly", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    }
+
+                </div>
+                <div>
+                    @*<div>
+                        @Html.ActionLink("Close", "Index", null, new { @class = "btn btn-primary btn-large" })
+                        @if (@ViewBag.RecordNotExist == null)
+                        {
+                            if (Model.RqStatus == "Draft")
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.RqID }, new { @class = "btn btn-primary btn-large" })
+                            }
+
+                        }
+                        @if (@ViewBag.RecordNotExist == null)
+                        {
+                            if (Model.RqStatus == "Submitted")
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.RqID }, new { @class = "btn btn-primary btn-large" })
+                            }
+
+                        }
+                    </div>*@
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+        }
+        <div style="clear:both;margin-top:5px"></div>
+        <div>List Of Inspector</div>
+
+        <table class="table table-striped">
+            <tr>
+                <th scope="col">Inspector No</th>
+                <th scope="col">Inspector Name</th>
+                <th scope="col">Assigned Date & Time </th>
+                <th scope="col">Planed Start Date & Time</th>
+                <th scope="col">Planed End Date & Time</th>
+                <th scope="col">Actual Start Date & Time</th>
+                <th scope="col">Actual End Date & Time</th>
+            </tr>
+            @if (Model.lstAssignIns != null)
+            {
+                for (int i = 0; i < Model.lstAssignIns.Count; i++)
+                {
+                    <tr>
+                        <td scope="row">@Model.lstAssignIns[i].InsPsNo</td>
+                        <td scope="row">@Model.lstAssignIns[i].InsPsName</td>
+                        <td scope="row">@Model.lstAssignIns[i].InsDttm</td>
+                        @if (@Model.lstRequest[i].PlnStart.HasValue)
+                        {
+                            <td scope="row">@Model.lstRequest[i].PlnStart</td>
+                            <td scope="row">@Model.lstRequest[i].PlnEnd</td>
+                        }
+                        else
+                        {
+                            <td scope="row"></td>
+                            <td scope="row"></td>
+                        }
+                        @if (@Model.lstRequest[i].ActulStart.HasValue)
+                        {
+                            <td scope="row">@Model.lstRequest[i].ActulStart</td>
+                            <td scope="row">@Model.lstRequest[i].ActulEnd</td>
+                        }
+                        else
+                        {
+                            <td scope="row"></td>
+                            <td scope="row"></td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>No Document avaliable</td>
+                </tr>
+            }
+
+        </table>
+        <div style="clear:both;margin-top:-5px"></div>
+        <div>List Of Document</div>
+
+        <table class="table table-striped">
+            <tr>
+                <th scope="col">Document Name</th>
+                <th scope="col">Upload By</th>
+                <th scope="col">Upload Date</th>
+                <th scope="col"></th>
+            </tr>
+            @if (Model.lstDocument != null)
+            {
+                for (int i = 0; i < Model.lstDocument.Count; i++)
+                {
+                    <tr>
+                        <td scope="row">@Model.lstDocument[i].DocName</td>
+                        <td scope="row">@Model.lstDocument[i].UpldBy</td>
+                        <td scope="row">@Model.lstDocument[i].UpldDttm</td>
+                        <td scope="row">
+                            <a href="~/UploadedFiles/@Model.lstDocument[i].DocName" target='_blank'>Download</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>No Document avaliable</td>
+                </tr>
+            }
+
+        </table>
+
+        <div>Agency Inspector:</div>
+        <table class="table table-striped">
+            <tr>
+                <th cope="col">TpNo</th>
+                <th cope="col">Name</th>
+                <th cope="col">Mail</th>
+                <th cope="col">Mobile No</th>
+                <th cope="col"></th>
+            </tr>
+            @if (Model.listTpiMstModel != null)
+            {
+                for (int k = 0; k < Model.listTpiMstModel.Count; k++)
+                {
+                    <tr>
+                        <td scope="row">@Model.listTpiMstModel[k].TpID</td>
+                        <td scope="row">@Model.listTpiMstModel[k].TpName</td>
+                        <td scope="row">@Model.listTpiMstModel[k].TpMail</td>
+                        <td scope="row">@Model.listTpiMstModel[k].TpMob</td>
+                        <td scope="row"></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Not assign Inspector yet</td>
+                </tr>
+            }
+        </table>
+
+    }
+</div>

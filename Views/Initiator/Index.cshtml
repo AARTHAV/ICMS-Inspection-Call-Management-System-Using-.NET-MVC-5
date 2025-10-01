@@ -1,0 +1,166 @@
+﻿@model ICMS.Models.InspReqViewModel
+@using System.Globalization;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>List of Inspection Request</h4>
+
+<form method="get" action="@Url.Action("Search", "Initiator")">
+    <div class="form-group">
+        <div>
+            <div class="col-md-3">
+                @Html.DropDownList("StID", (IEnumerable<SelectListItem>)ViewBag.Status, "Select Status", new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="searchText" id="searchText" value="@ViewBag.SearchData" class="form-control" />
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-default">Search</button>
+            @Html.ActionLink("Reset", "Index", "Initiator", new { @class = "btn btn-default" })
+        </div>
+
+    </div>
+</form>
+<p>
+    @Html.ActionLink("Raise Request", "Create", null, new { @class = "btn btn-primary btn-large" })
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+    <label style="color:red">@ViewBag.RecordNotExist </label>
+</p>
+<table class="table table-striped">
+    <tr>
+        <th scope="col">Request</th>
+        <th scope="col">Revision</th>
+        <th scope="col">Project</th>
+        <th scope="col">Forging</th>
+        <th scope="col">Stage</th>
+        <th scope="col">Request Date & Time</th>
+        <th scope="col">Offer Date & Time</th>
+        <th scope="col">Department</th>
+        <!-- <th scope="col">PS No</th> -->
+        <th scope="col">Employee Name</th>
+        <th scope="col">Request Type</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+    </tr>
+    @if (Model.ListInspReq != null)
+    {
+        for (int i = 0; i < Model.ListInspReq.Count; i++)
+        {
+            <tr>
+                <td scope="row">@Model.ListInspReq[i].RqNo</td>
+                <td scope="row">@Model.ListInspReq[i].RqRevNo</td>
+                <td scope="row">@Model.ListInspReq[i].PrjNo</td>
+                <td scope="row"><label style="font-weight: 100; width: 50%; inline-size: 150px; overflow: hidden; word-break:break-all;"> @Model.ListInspReq[i].FrgNo</label></td>
+                <td scope="row">@Model.ListInspReq[i].StageName</td>
+                <td scope="row"><label style="font-weight: 100; max-width: 50%; inline-size: 150px;">@Model.ListInspReq[i].RqRegDttm</label></td>
+                <td scope="row"><label style="font-weight: 100; max-width: 50%; inline-size: 150px;">@Model.ListInspReq[i].OfrDttm</label></td>
+                <td scope="row">@Model.ListInspReq[i].RqDpcd</td>
+                <!-- <td scope="row">@Model.ListInspReq[i].EmployeeID</td> -->
+                <td scope="row">@Model.ListInspReq[i].EmployeeName</td>
+                <td scope="row">@Model.ListInspReq[i].RqTypeName</td>
+                <td scope="row">@Model.ListInspReq[i].RqStatus</td>
+                <td scope="row">
+                    @Html.ActionLink("View", "Details", new { id = Model.ListInspReq[i].RqID, data = Model.ListInspReq[i].PlanID })
+
+                    @if (Model.ListInspReq[i].PlanID == "0" && Model.ListInspReq[i].RqStatus != "Closed")
+                    {
+                        if (!string.IsNullOrEmpty(Session["EmpPsNo"] as string))
+                        {
+                            if (Model.ListInspReq[i].RqRegBy == Session["EmpPsNo"].ToString())
+                            {
+                                @*@Html.ActionLink("| Edit", "Edit", new { id = Model.ListInspReq[i].RqID })*@
+                            }
+                        }
+                    }
+                    @if (Model.ListInspReq[i].RqStatus == "Draft")
+                    {
+                        if (!string.IsNullOrEmpty(Session["EmpPsNo"] as string))
+                        {
+                            if (Model.ListInspReq[i].RqRegBy == Session["EmpPsNo"].ToString())
+                            {
+                                @Html.ActionLink("Cancel", "Cancel", new { id = Model.ListInspReq[i].RqID })
+                            }
+                        }
+
+                    }
+
+                </td>
+            </tr>
+        }
+    }
+
+
+</table>
+
+@if (Model.pager.EndPage > 1)
+{
+<ul class="pagination">
+    @if (ViewBag.IsSearch == "false")
+    {
+        if (Model.pager.CurrentPage > 1)
+        {
+            <li>
+               @Html.ActionLink("First", "Index", new { id = 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Previous", "Index", new { id = Model.pager.CurrentPage - 1 })
+            </li>
+        }
+
+        <!--Paging from StartPage to the end Page-->
+        for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+        {
+            <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                @Html.ActionLink((string)(page).ToString(), "Index", new { page = Model.pager.CurrentPage + 1 })
+            </li>
+        }
+        <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+        if (Model.pager.CurrentPage <= Model.pager.TotalPages)
+        {
+            <li>
+                @Html.ActionLink("Next", "Index", new { page = Model.pager.CurrentPage + 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Last", "Index", new { page = Model.pager.TotalPages })
+            </li>
+        }
+    }
+    else
+    {
+        if (Model.pager.CurrentPage > 1)
+        {
+            <li>
+                @Html.ActionLink("First", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage < 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Previous", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage - 1 })
+            </li>
+        }
+        <!--Paging from StartPage to the end Page-->
+        for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+        {
+            <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                @Html.ActionLink((string)(page).ToString(), "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = page })
+            </li>
+        }
+        <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+        if (Model.pager.CurrentPage <= Model.pager.TotalPages)
+        {
+            <li>
+                @Html.ActionLink("Next", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.CurrentPage + 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Last", "Search", new { StID = ViewBag.SearchStatusID, searchText = ViewBag.SearchText, page = Model.pager.TotalPages })
+            </li>
+        }
+    }
+
+    <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+
+
+</ul>
+}

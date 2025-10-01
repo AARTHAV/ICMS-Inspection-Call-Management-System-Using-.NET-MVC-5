@@ -1,0 +1,188 @@
+﻿@model ICMS.Models.GroupHeaderViewModel
+@{
+    ViewBag.Title = "Print";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>List of Request</h4>
+<p>
+    <label style="color:green">@TempData["TransactionStatus"] </label>
+    <label style="color:red">@TempData["RecordException"] </label>
+    <label style="color:red">@ViewBag.RecordException </label>
+</p>
+<table class="table table-striped">
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">GroupID</th>
+        <th scope="col">Group Date & Time</th>
+        <th scope="col">Department</th>
+        <th scope="col">PS No</th>
+        <th scope="col"></th>
+    </tr>
+    @if (Model.ListGroup != null)
+    {
+        for (int i = 0; i < Model.ListGroup.Count; i++)
+        {
+            <tr>
+
+                <td scope="row">
+                    @*<img src="~/img/plus.png" class="accordion-button collapsed" width="50px" />*@
+                    <img src="~/img/plus.png" width="15px" />
+                    <div style="display:none">
+                        <table cellpadding="0" cellspacing="0" class="ChildGrid">
+                            <tr>
+                                <th scope="col">Request</th>
+                                <th scope="col">Reversion</th>
+                                <th scope="col">Project</th>
+                                <th scope="col">Forging No</th>
+                                <th scope="col">Stage</th>
+                                <th scope="col">Plan Start Date & Time</th>
+                                <th scope="col">Plan End Date & Time</th>
+                            </tr>
+                            @if (Model.ListGroup != null)
+                            {
+                                for (int j = 0; j < Model.ListGroup[i].listInspReqModel.Count; j++)
+                                {
+                                    <tr>
+                                        <td scope="row">@Model.ListGroup[i].listInspReqModel[j].RqNo</td>
+                                        <td scope="row">@Model.ListGroup[i].listInspReqModel[j].RqRevNo</td>
+                                        <td scope="row">@Model.ListGroup[i].listInspReqModel[j].PrjNo</td>
+                                        <td scope="row">@Model.ListGroup[i].listInspReqModel[j].FrgNo</td>
+                                        <td scope="row">@Model.ListGroup[i].listInspReqModel[j].StageName</td>
+                                        <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnStart</td>
+                                        <td scope="row">@Model.ListGroup[i].listRequestPlannerDetailsModels[j].PlnEnd</td>
+                                    </tr>
+                                }
+
+                            }
+                        </table>
+                    </div>
+                </td>
+                <td scope="row"> @Model.ListGroup[i].GroupID</td>
+                <td scope="row">@Model.ListGroup[i].GroupDttm</td>
+                <td scope="row">@Model.ListGroup[i].GroupDpcd</td>
+                <td scope="row">@Model.ListGroup[i].GroupBy</td>
+                <td scope="row">
+                    @Html.ActionLink("Print", "DownloadExcelFile", new { id = Model.ListGroup[i].GroupID }, new { @class = "btn btn-primary btn-large", onclick = "return confirm('Do you want to Print/Download this request?');" })
+                    @*@Html.ActionLink("Reject", "Details", new { id = Model.ListGroup[i].GroupID }, new { data_toggle = "modal", data_target = "#exampleModal" })*@
+                    @*<button type="button" class="btn btn-primary" name="@Model.ListGroup[i].GroupID" id="@Model.ListGroup[i].GroupID" data-toggle="modal" data-target="#exampleModal" onclick="return GetGroupID(@Model.ListGroup[i].GroupID)">Reject & Remarks</button>*@
+                </td>
+            </tr>
+        }
+
+
+    }
+
+
+</table>
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Insert</button>*@
+@if (Model.pager.EndPage > 1)
+{
+    <ul class="pagination">
+        <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+        @if (Model.pager.CurrentPage > 1)
+        {
+            <li>
+                @Html.ActionLink("First", "Index", new { id = 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Previous", "Index", new { id = Model.pager.CurrentPage - 1 })
+            </li>
+        }
+        <!--Paging from StartPage to the end Page-->
+        @for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+        {
+            <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                @Html.ActionLink((string)(page).ToString(), "Index", new { page = Model.pager.CurrentPage + 1 })
+            </li>
+        }
+        <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+        @if (Model.pager.CurrentPage <= Model.pager.TotalPages)
+        {
+            <li>
+                @Html.ActionLink("Next", "Index", new { page = Model.pager.CurrentPage + 1 })
+            </li>
+            <li>
+                @Html.ActionLink("Last", "Index", new { page = Model.pager.TotalPages })
+            </li>
+        }
+    </ul>
+}
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @*<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .button1 {
+            border-radius: 2px;
+        }
+
+        .button2 {
+            border-radius: 4px;
+        }
+
+        .button3 {
+            border-radius: 8px;
+        }
+
+        .button4 {
+            border-radius: 12px;
+        }
+
+        .button5 {
+            border-radius: 50%;
+        }
+    </style>
+
+    <script type="text/javascript">
+        //Assign Click event to Plus Image.
+        $("body").on("click", "img[src*='plus.png']", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+            $(this).attr("src", "/img/minus.png");
+            $(this).attr("width", "15px");
+        });
+        //Assign Click event to Minus Image.
+        $("body").on("click", "img[src*='minus.png']", function () {
+            $(this).attr("src", "/img/plus.png");
+            $(this).attr("width", "15px");
+            $(this).closest("tr").next().remove();
+        });
+        function GetGroupID(ID) {
+            document.getElementById('ListGroup_0__ID').value = ID;
+        }
+        $('select').on('change', function () {
+            document.getElementById('ListGroup_0__Reason').value = this.value;
+        });
+        function CheckDateValidation() {
+            var ResnID = document.getElementById('ResnID');
+            var Remark = document.getElementById('ListGroup_0_Remark');
+
+            if (ResnID.value == "") {
+                alert("Please Select Reason");
+                return false;
+            }
+            if (Remark.value == "") {
+                alert("Please Select Reason");
+                return false;
+            }
+        }
+    </script>
+
+}
+

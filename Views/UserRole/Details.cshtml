@@ -1,0 +1,69 @@
+﻿@model ICMS.Models.UserRoleMasterModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User role details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.EmpNo)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EmpNo)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.RoDesc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.RoDesc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UrStatus)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.UrStatus)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UrRegDttm)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.UrRegDttm)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UrRegBy)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.UrRegBy)
+                </dd>
+
+            </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.EmpNo, data = Model.RoID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
+

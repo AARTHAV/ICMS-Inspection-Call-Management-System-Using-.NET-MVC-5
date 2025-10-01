@@ -1,0 +1,56 @@
+﻿@model ICMS.Models.UserMstModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h4>User details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EmpNo)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EmpNo)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.UsrRegDttm)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UsrRegDttm)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UsrRegBy)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UsrRegBy)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.UsrStatus)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UsrStatus)
+            </dd>
+
+        </dl>
+        }
+    }
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.EmpNo })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

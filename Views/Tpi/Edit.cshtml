@@ -1,0 +1,120 @@
+﻿@model ICMS.Models.TpiMstModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edit Agency Employee</h4>
+        <div style="color:red">
+            @ViewBag.RecordNotExist
+            @ViewBag.RecordException
+        </div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+      
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TpID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TpID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AgID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @*@Html.EditorFor(model => model.AgcyID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AgcyID, "", new { @class = "text-danger" })*@
+
+                @Html.DropDownListFor(model => model.AgID,
+                         (IEnumerable<SelectListItem>)ViewBag.Agency,
+                         "Select Agency",
+                          new { @class = "form-control", style = "width:30%" })
+            </div>
+        </div>
+
+     
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TpName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TpName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpMob, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TpMob, new { htmlAttributes = new { @type = "number", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TpMob, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpMail, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TpMail, new { htmlAttributes = new { @type = "email", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TpMail, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpPrm, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @*@Html.EditorFor(model => model.TpPrm, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.DropDownListFor(model => model.TpPrm,
+                        new SelectList(new List<SelectListItem> {
+                                 new SelectListItem { Text = "Yes", Value = "1"},
+                                 new SelectListItem { Text = "No", Value = "0"}
+                             }, "Value", "Text"),
+                        "Select TpPrm",
+                         new { @class = "form-control", style = "width:30%" })
+                @Html.ValidationMessageFor(model => model.TpPrm, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+ 
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpRegBy, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TpRegBy, new { htmlAttributes = new { @readonly = "readonly", @Value = Session["EmpName"].ToString(), @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TpStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.TpStatus,
+                         new SelectList(new List<SelectListItem> {
+                                  new SelectListItem { Text = "Yes", Value = "1"},
+                                  new SelectListItem { Text = "No", Value = "0"}
+                              }, "Value", "Text"),
+                         "Select status",
+                          new { @class = "form-control", style = "width:30%" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

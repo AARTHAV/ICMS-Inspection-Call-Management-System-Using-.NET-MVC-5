@@ -1,0 +1,75 @@
+﻿@model ICMS.Models.StatusModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Status details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.StID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StDesc)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StDesc)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.StRegDttm)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StRegDttm)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StRegBy)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StRegBy)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.StStatus)
+            </dt>
+
+            <dd>
+                @if (Model.StStatus == 1)
+                {
+                    <label style="text-decoration:none">Yes</label>
+                }
+                else
+                {
+                    <label style="text-decoration:none">No</label>
+                }
+
+            </dd>
+
+        </dl>
+        }
+    }
+
+</div>
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.StID });
+
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

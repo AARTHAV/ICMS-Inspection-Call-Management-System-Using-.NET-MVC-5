@@ -1,0 +1,69 @@
+﻿@model ICMS.Models.ProjectDescModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Project Description details</h4>
+    <div style="color:red">@ViewBag.RecordNotExist</div>
+    <hr />
+    @{
+        if (@ViewBag.RecordNotExist == null)
+        {
+            <div class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ID)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ID)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ProjectCode)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ProjectCode)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ProjectDesc)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ProjectDesc)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CreatedDate)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IsActive)
+                </dd>
+
+            </div>
+        }
+    }
+</div>
+
+<p>
+    @if (@ViewBag.RecordNotExist == null)
+    {
+        @Html.ActionLink("Edit |", "Edit", new { id = Model.ID })
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
